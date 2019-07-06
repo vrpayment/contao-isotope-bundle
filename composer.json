@@ -13,7 +13,8 @@
         "php": "^7.1",
         "contao/core-bundle": "4.7.*",
         "symfony/framework-bundle": "^3.3",
-        "isotope/isotope-core": "^2.5"
+        "isotope/isotope-core": "^2.5",
+        "menatwork/contao-multicolumnwizard": "3.3.*"
     },
     "conflict": {
         "contao/core": "*",
