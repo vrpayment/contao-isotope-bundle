@@ -1,9 +1,10 @@
 <?php
 
 /*
- * This file is part of [package name].
+ * VR Payment GmbH Contao Isotope Bundle
  *
- * (c) John Doe
+ * @copyright  Copyright (c) 2019-2019, VR Payment GmbH
+ * @author     VR Payment GmbH <info@vr-payment.de>
  *
  * @license LGPL-3.0-or-later
  */
