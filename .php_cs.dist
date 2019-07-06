@@ -1,5 +1,7 @@
 <?php
 
+$date = date('Y');
+
 $header = <<<EOF
 This file is part of [package name].
 

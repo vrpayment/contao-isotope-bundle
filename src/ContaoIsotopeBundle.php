@@ -8,10 +8,10 @@
  * @license LGPL-3.0-or-later
  */
 
-namespace Contao\SkeletonBundle;
+namespace Vrpayment\ContaoIsotopeBundle;
 
 use Symfony\Component\HttpKernel\Bundle\Bundle;
 
-class ContaoSkeletonBundle extends Bundle
+class ContaoIsotopeBundle extends Bundle
 {
 }
