@@ -15,6 +15,14 @@
 // Config possible PaymentTypes
 $GLOBALS['VRPAYMENT_TYPES'] = [
     'MASTER' => [
-        'icon' => 'paymenticon_MASTER'
+        'icon' => 'paymenticon_MASTER',
+        'handling' => 'copy-and-pay'
     ],
+    'VISA' => [
+        'icon' => 'paymenticon_VISA',
+        'handling' => 'copy-and-pay'
+    ],
+
 ];
+
+const PATH_TO_PAYMENTICONS = 'bundles/contaoisotope/paymenticons/';

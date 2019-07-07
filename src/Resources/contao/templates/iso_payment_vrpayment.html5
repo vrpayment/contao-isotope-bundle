@@ -1,0 +1,20 @@
+<h2><?= $this->headline ?></h2>
+<p class="message"><?= $this->message ?></p>
+<div class="vrpayment-container">
+    <div class="column orderreview left">
+        <h6>Ihre Produkte</h6>
+        <ul>
+            <?php foreach($this->items as $item): ?>
+                <li><?= $item['name']; ?> <?= $item['price']; ?></li>
+            <?php endforeach; ?>
+        </ul>
+
+        <ul class="totals">
+            <li><span>Bestellsumme:</span> <?= $this->review['total']; ?></li>
+        </ul>
+    </div>
+    <div class="column paymenttypes right">
+        <h6>Ihre Bezahlvarianten</h6>
+        <?= $this->paymentTypes; ?>
+    </div>
+</div>
