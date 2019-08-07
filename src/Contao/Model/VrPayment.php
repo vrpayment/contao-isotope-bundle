@@ -12,6 +12,9 @@
 namespace Vrpayment\ContaoIsotopeBundle\Contao\Model;
 
 use Contao\StringUtil;
+use Contao\System;
+use GuzzleHttp\Client;
+use GuzzleHttp\Psr7\Request;
 use Isotope\Interfaces\IsotopePayment;
 use Isotope\Interfaces\IsotopeProductCollection;
 use Isotope\Interfaces\IsotopePurchasableCollection;
@@ -33,6 +36,9 @@ class VrPayment extends Payment implements IsotopePayment
 
             return false;
         }
+
+        $apiManager = System::getContainer()->get('Vrpayment\ContaoIsotopeBundle\Api\ApiManager');
+        $apiManager->initializeWithToken('OGFjN2E0Yzc2YmRmYWU0MzAxNmJlMTdkNWZhODA0NWN8S3lKczVocFd6eQ==', true);
 
         $arrData = [];
 

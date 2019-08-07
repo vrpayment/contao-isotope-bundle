@@ -8,12 +8,17 @@ services:
             calls:
                 - ["setContainer", ["@service_container"]]
 
-    # Configure Guzzle
-    Vrpayment\ContaoIsotopeBundle\Http\Guzzle:
-        class: Vrpayment\ContaoIsotopeBundle\Http\Guzzle
+    # Handle API Manager as a factored Service
+    Vrpayment\ContaoIsotopeBundle\Api\ApiManagerFactory: ~
+
+    Vrpayment\ContaoIsotopeBundle\Api\ApiManager:
+        class: Vrpayment\ContaoIsotopeBundle\Api\ApiManager
+        factory: ['@Vrpayment\ContaoIsotopeBundle\Api\ApiManagerFactory', createApiManager]
         public: true
+        autowire: true
         arguments:
+            - "@doctrine.dbal.default_connection"
             - "@monolog.logger"
         tags:
-            - { name: monolog.logger, channel: vrpayment }
+            - { name: monolog.logger, channel: app }
 

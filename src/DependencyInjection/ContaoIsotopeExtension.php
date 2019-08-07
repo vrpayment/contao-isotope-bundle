@@ -28,6 +28,13 @@ class ContaoIsotopeExtension extends Extension
             new FileLocator(__DIR__.'/../Resources/config')
         );
 
-        $loader->load('services.yml');
+        static $files = [
+            'config.yml',
+            'services.yml',
+        ];
+
+        foreach ($files as $file) {
+            $loader->load($file);
+        }
     }
 }
