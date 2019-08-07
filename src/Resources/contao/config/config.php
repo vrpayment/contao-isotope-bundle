@@ -26,3 +26,5 @@ $GLOBALS['VRPAYMENT_TYPES'] = [
 ];
 
 const PATH_TO_PAYMENTICONS = 'bundles/contaoisotope/paymenticons/';
+const URL_VRPAYMENT_API_DEV = '';
+const URL_VRPAYMENT_API_LIVE = '';
