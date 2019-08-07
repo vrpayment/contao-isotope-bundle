@@ -28,7 +28,7 @@ class Plugin implements BundlePluginInterface
             BundleConfig::create(ContaoIsotopeBundle::class)
                 ->setLoadAfter([
                     ContaoCoreBundle::class,
-                    'isotope']),
+                    'isotope', ]),
         ];
     }
 }

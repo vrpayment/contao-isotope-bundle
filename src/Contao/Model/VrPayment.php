@@ -1,19 +1,17 @@
 <?php
-/**
- * contao-isotope-bundle for Contao Open Source CMS
- *
- * Copyright (C) 2019 47GradNord - Agentur für Internetlösungen
- *
- * @license    commercial
- * @author     Holger Neuner
- */
 
+/*
+ * VR Payment GmbH Contao Isotope Bundle
+ *
+ * @copyright  Copyright (c) 2019-2019, VR Payment GmbH
+ * @author     VR Payment GmbH <info@vr-payment.de>
+ *
+ * @license LGPL-3.0-or-later
+ */
 
 namespace Vrpayment\ContaoIsotopeBundle\Contao\Model;
 
-
 use Contao\StringUtil;
-use Isotope\CheckoutStep\PaymentMethod;
 use Isotope\Interfaces\IsotopePayment;
 use Isotope\Interfaces\IsotopeProductCollection;
 use Isotope\Interfaces\IsotopePurchasableCollection;
@@ -31,14 +29,14 @@ class VrPayment extends Payment implements IsotopePayment
     public function checkoutForm(IsotopeProductCollection $objOrder, \Module $objModule)
     {
         if (!$objOrder instanceof IsotopePurchasableCollection) {
-            \System::log('Product collection ID "' . $objOrder->getId() . '" is not purchasable', __METHOD__, TL_ERROR);
+            \System::log('Product collection ID "'.$objOrder->getId().'" is not purchasable', __METHOD__, TL_ERROR);
+
             return false;
         }
 
         $arrData = [];
 
-        foreach($objOrder->getItems() as $objItem)
-        {
+        foreach ($objOrder->getItems() as $objItem) {
             $arrData['items'][] = [
                 'name' => $objItem->getName(),
                 'price' => Isotope::formatPriceWithCurrency($objItem->getPrice()),
@@ -46,14 +44,13 @@ class VrPayment extends Payment implements IsotopePayment
             ];
         }
 
-
         $arrData['review']['total'] = Isotope::formatPriceWithCurrency($objOrder->getTotal());
         $arrData['review']['subtotal'] = Isotope::formatPriceWithCurrency($objOrder->getSubtotal());
 
         $arrData['paymentTypes'] = $this->getPaymentTypes($objOrder->getPaymentMethod());
 
         /** @var Template|\stdClass $objTemplate */
-        $objTemplate             = new Template('iso_payment_vrpayment');
+        $objTemplate = new Template('iso_payment_vrpayment');
         $objTemplate->setData($arrData);
 
         return $objTemplate->parse();
@@ -72,8 +69,7 @@ class VrPayment extends Payment implements IsotopePayment
         //** @var Template|\stdClass $objTemplate */
         $objTemplate = new Template('iso_payment_vrpayment_paymenttypes');
 
-        foreach ($givenPaymentTypes as $givenPaymentType)
-        {
+        foreach ($givenPaymentTypes as $givenPaymentType) {
             $arrData['paymentTypes'][] = [
                 'name' => $givenPaymentType['vrpayment_paymentmethod_label'],
                 'brand' => $givenPaymentType['vrpayment_paymentmethod_brand'],
