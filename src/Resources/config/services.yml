@@ -7,3 +7,13 @@ services:
         Symfony\Component\DependencyInjection\ContainerAwareInterface:
             calls:
                 - ["setContainer", ["@service_container"]]
+
+    # Configure Guzzle
+    Vrpayment\ContaoIsotopeBundle\Http\Guzzle:
+        class: Vrpayment\ContaoIsotopeBundle\Http\Guzzle
+        public: true
+        arguments:
+            - "@monolog.logger"
+        tags:
+            - { name: monolog.logger, channel: vrpayment }
+

@@ -1,0 +1,10 @@
+- { resource: services.yml }
+
+monolog:
+    handlers:
+        # this "file_log" key could be anything
+        vrpaymen_restapi_log:
+            type:  rotating_file
+            path: "%kernel.logs_dir%/import/import_batch_%kernel.environment%.log"
+            level: debug
+            channels: ['vrpayment']
