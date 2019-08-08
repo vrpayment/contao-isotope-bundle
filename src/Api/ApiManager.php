@@ -68,7 +68,6 @@ class ApiManager
         return $this;
     }
 
-
     /**
      * Log message.
      *
@@ -88,7 +87,7 @@ class ApiManager
         $ch = curl_init();
         curl_setopt($ch, CURLOPT_URL, $url);
         curl_setopt($ch, CURLOPT_HTTPHEADER, array(
-            'Authorization:Bearer OGE4Mjk0MTc0ZTczNWQwYzAxNGU3OGJlYjZjNTE1NGZ8Y1RaakFtOWM4Nw=='));
+            'Authorization:Bearer '.$token));
         curl_setopt($ch, CURLOPT_POST, 1);
         curl_setopt($ch, CURLOPT_POSTFIELDS, $data);
         curl_setopt($ch, CURLOPT_SSL_VERIFYPEER, false);// this should be set to true in production
@@ -98,6 +97,7 @@ class ApiManager
             return curl_error($ch);
         }
         curl_close($ch);
+
         return $responseData;
     }
 }

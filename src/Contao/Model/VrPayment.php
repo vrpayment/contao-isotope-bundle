@@ -26,7 +26,10 @@ class VrPayment extends Payment implements IsotopePayment
 {
     public function processPayment(IsotopeProductCollection $objOrder, \Module $objModule)
     {
-        // TODO: Implement processPayment() method.
+        dump($objOrder); exit;
+
+        $apiManager = System::getContainer()->get('Vrpayment\ContaoIsotopeBundle\Api\ApiManager');
+        $apiManager->initializeWithToken('OGFjN2E0Yzc2YmRmYWU0MzAxNmJlMTdkNWZhODA0NWN8S3lKczVocFd6eQ==', true);
     }
 
     public function checkoutForm(IsotopeProductCollection $objOrder, \Module $objModule)
@@ -36,6 +39,8 @@ class VrPayment extends Payment implements IsotopePayment
 
             return false;
         }
+
+        dump($objOrder); exit;
 
         $apiManager = System::getContainer()->get('Vrpayment\ContaoIsotopeBundle\Api\ApiManager');
         $apiManager->initializeWithToken('OGFjN2E0Yzc2YmRmYWU0MzAxNmJlMTdkNWZhODA0NWN8S3lKczVocFd6eQ==', true);

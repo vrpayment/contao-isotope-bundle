@@ -8,62 +8,38 @@
  * @author     Holger Neuner
  */
 
-$GLOBALS['TL_DCA']['tl_iso_payment']['palettes']['vrpayment'] = '{type_legend},name,label,type;{note_legend:hide},note;{config_legend},new_order_status,quantity_mode,minimum_quantity,maximum_quantity,minimum_total,maximum_total,countries,shipping_modules,product_types,product_types_condition,config_ids;{gateway_legend},vrpayment_userid,vrpayment_password;{vrpayment_config_legend},vrpayment_paymentmethod;{price_legend:hide},price,tax_class;{enabled_legend},enabled,debug,logging';
+$GLOBALS['TL_DCA']['tl_iso_payment']['palettes']['vrpayment'] = '{type_legend},name,label,type;{note_legend:hide},note;{config_legend},new_order_status,quantity_mode,minimum_quantity,maximum_quantity,minimum_total,maximum_total,countries,shipping_modules,product_types,product_types_condition,config_ids;{gateway_legend},vrpayment_token, vrpayment_entityid, vrpayment_brand,vrpayment_brandlogo;{vrpayment_config_legend};{price_legend:hide},price,tax_class;{enabled_legend},enabled,debug,logging';
 
 // Additional Fields
-$GLOBALS['TL_DCA']['tl_iso_payment']['fields']['vrpayment_userid'] = array
+$GLOBALS['TL_DCA']['tl_iso_payment']['fields']['vrpayment_token'] = array
 (
-    'label'                 => &$GLOBALS['TL_LANG']['tl_iso_payment']['vrpayment_userid'],
+    'label'                 => &$GLOBALS['TL_LANG']['tl_iso_payment']['vrpayment_token'],
+    'inputType'             => 'text',
+    'eval'                  => array('mandatory'=>true, 'decodeEntities'=>true, 'tl_class'=>'w50'),
+    'sql'                   => 'text NULL',
+);
+
+$GLOBALS['TL_DCA']['tl_iso_payment']['fields']['vrpayment_entityid'] = array
+(
+    'label'                 => &$GLOBALS['TL_LANG']['tl_iso_payment']['vrpayment_entityid'],
     'inputType'             => 'text',
     'eval'                  => array('mandatory'=>true, 'decodeEntities'=>true, 'tl_class'=>'w50'),
     'sql'                   => "varchar(255) NOT NULL default ''",
 );
-$GLOBALS['TL_DCA']['tl_iso_payment']['fields']['vrpayment_password'] = array
+
+$GLOBALS['TL_DCA']['tl_iso_payment']['fields']['vrpayment_brand'] = array
 (
-    'label'                 => &$GLOBALS['TL_LANG']['tl_iso_payment']['vrpayment_password'],
+    'label'                 => &$GLOBALS['TL_LANG']['tl_iso_payment']['vrpayment_brand'],
     'inputType'             => 'text',
-    'eval'                  => array('mandatory'=>true, 'decodeEntities'=>true, 'tl_class'=>'w50', 'hideInput'=>true),
-    'sql'                   => "varchar(255) NOT NULL default ''",
+    'eval'                  => array('mandatory'=>true, 'decodeEntities'=>true, 'tl_class'=>'w50'),
+    'sql'                   => "varchar(64) NOT NULL default ''",
 );
 
-$GLOBALS['TL_DCA']['tl_iso_payment']['fields']['vrpayment_paymentmethod'] = array
+$GLOBALS['TL_DCA']['tl_iso_payment']['fields']['vrpayment_brandlogo'] = array
 (
-    'label'                 => &$GLOBALS['TL_LANG']['tl_iso_payment']['vrpayment_paymentmethod'],
-    'exclude' 		        => true,
-    'inputType' 		    => 'multiColumnWizard',
-    'eval' 			=> array
-    (
-        'columnFields' => array
-        (
-            'vrpayment_paymentmethod_brand' => array
-            (
-                'label'                 => &$GLOBALS['TL_LANG']['tl_iso_payment']['vrpayment_paymentmethod_brand'],
-                'inputType'             => 'select',
-                'options'               => array('MASTER', 'VISA', 'PAYDIREKT', 'PAYPAL', 'SOFORTUEBERWEISUNG', 'DIRECTDEBIT_SEPA'),
-                'eval' 			        => array('style' => 'width:150px', 'includeBlankOption'=>true, 'chosen'=>true, 'mandatory' => true),
-                'reference'             => &$GLOBALS['TL_LANG']['tl_iso_payment'],
-            ),
-            'vrpayment_paymentmethod_entityid' => array
-            (
-                'label'                 => &$GLOBALS['TL_LANG']['tl_iso_payment']['vrpayment_paymentmethod_entityid'],
-                'inputType'             => 'text',
-                'eval' 			        => array('style' => 'width:300px', 'mandatory'=>true, 'decodeEntities'=>true)
-            ),
-            'vrpayment_paymentmethod_type' => array
-            (
-                'label'                 => &$GLOBALS['TL_LANG']['tl_iso_payment']['vrpayment_paymentmethod_type'],
-                'inputType'             => 'select',
-                'options'                 => array('PA' => 'Preauthorization', 'DB' => 'Debit', 'CD' => 'Credit', 'CP' => 'Capture', 'RV' => 'Reversal', 'RF' => 'Refund'),
-                'eval' 			        => array('style' => 'width:120px', 'includeBlankOption'=>true, 'chosen'=>true, 'mandatory' => true)
-            ),
-            'vrpayment_paymentmethod_label' => array
-            (
-                'label'                 => &$GLOBALS['TL_LANG']['tl_iso_payment']['vrpayment_paymentmethod_label'],
-                'inputType'             => 'text',
-                'eval' 			        => array('style' => 'width:300px', 'mandatory'=>true, 'decodeEntities'=>true)
-            ),
-        ),
-        'tl_class' => 'long'
-    ),
-    'sql'                   => "blob NULL"
+    'label'                 => &$GLOBALS['TL_LANG']['tl_iso_payment']['vrpayment_brandlogo'],
+    'exclude'                 => true,
+    'inputType'               => 'fileTree',
+    'eval'                    => array('fieldType'=>'radio', 'filesOnly'=>true, 'mandatory'=>true, 'tl_class'=>'clr', 'extensions'=>'jpg,png,jpeg,gif'),
+    'sql'                     => "binary(16) NULL"
 );
