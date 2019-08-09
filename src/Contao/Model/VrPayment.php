@@ -15,12 +15,16 @@ use Contao\StringUtil;
 use Contao\System;
 use GuzzleHttp\Client;
 use GuzzleHttp\Psr7\Request;
+use Isotope\Interfaces\IsotopeOrderableCollection;
 use Isotope\Interfaces\IsotopePayment;
 use Isotope\Interfaces\IsotopeProductCollection;
 use Isotope\Interfaces\IsotopePurchasableCollection;
 use Isotope\Isotope;
 use Isotope\Model\Payment;
+use Isotope\Model\ProductCollection\Order;
 use Isotope\Template;
+use Vrpayment\ContaoIsotopeBundle\Payment\PaymentDataEnterpay;
+use Vrpayment\ContaoIsotopeBundle\Payment\PaymentDataFactory;
 
 class VrPayment extends Payment implements IsotopePayment
 {
@@ -39,8 +43,9 @@ class VrPayment extends Payment implements IsotopePayment
 
             return false;
         }
+        dump($objOrder->getPaymentMethod());
 
-        dump($objOrder); exit;
+        dump($this->getPaymentData($objOrder)); exit;
 
         $apiManager = System::getContainer()->get('Vrpayment\ContaoIsotopeBundle\Api\ApiManager');
         $apiManager->initializeWithToken('OGFjN2E0Yzc2YmRmYWU0MzAxNmJlMTdkNWZhODA0NWN8S3lKczVocFd6eQ==', true);
@@ -67,32 +72,20 @@ class VrPayment extends Payment implements IsotopePayment
         return $objTemplate->parse();
     }
 
-    protected function getPaymentTypes(IsotopePayment $objPayment)
+    protected function getPaymentData(IsotopeOrderableCollection $objOrder)
     {
-        /** @var array $configPaymentType */
-        $configPaymentType = $GLOBALS['VRPAYMENT_TYPES'];
+        switch ($objOrder->getPaymentMethod()->vrpayment_brand) {
 
-        /** @var array $givenPaymentTypes */
-        $givenPaymentTypes = StringUtil::deserialize($objPayment->vrpayment_paymentmethod);
+            case 'ENTERPAY':
 
-        $arrData = [];
+                return new PaymentDataEnterpay($objOrder);
 
-        //** @var Template|\stdClass $objTemplate */
-        $objTemplate = new Template('iso_payment_vrpayment_paymenttypes');
+            default:
 
-        foreach ($givenPaymentTypes as $givenPaymentType) {
-            $arrData['paymentTypes'][] = [
-                'name' => $givenPaymentType['vrpayment_paymentmethod_label'],
-                'brand' => $givenPaymentType['vrpayment_paymentmethod_brand'],
-                'entityId' => $givenPaymentType['vrpayment_paymentmethod_entityid'],
-                'type' => $givenPaymentType['vrpayment_paymentmethod_type'],
-                'icon' => $configPaymentType[$givenPaymentType['vrpayment_paymentmethod_brand']]['icon'],
-                'handling' => $configPaymentType[$givenPaymentType['vrpayment_paymentmethod_brand']]['handling'],
-            ];
+                return null;
         }
 
-        $objTemplate->setData($arrData);
 
-        return $objTemplate->parse();
+
     }
 }
