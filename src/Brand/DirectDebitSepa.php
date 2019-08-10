@@ -13,7 +13,6 @@ namespace Vrpayment\ContaoIsotopeBundle\Brand;
 
 use Contao\Environment;
 use Contao\FrontendTemplate;
-use Contao\PageModel;
 use Isotope\Interfaces\IsotopeOrderableCollection;
 use Vrpayment\ContaoIsotopeBundle\Http\ResponseInterface;
 
