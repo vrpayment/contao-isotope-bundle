@@ -8,7 +8,7 @@
  * @author     Holger Neuner
  */
 
-$GLOBALS['TL_DCA']['tl_iso_payment']['palettes']['vrpayment'] = '{type_legend},name,label,type;{note_legend:hide},note;{config_legend},new_order_status,quantity_mode,minimum_quantity,maximum_quantity,minimum_total,maximum_total,countries,shipping_modules,product_types,product_types_condition,config_ids;{gateway_legend},vrpayment_token, vrpayment_entityid, vrpayment_brand,vrpayment_type,vrpayment_brandlogo;{vrpayment_config_legend};{price_legend:hide},price,tax_class;{enabled_legend},enabled,debug,logging';
+$GLOBALS['TL_DCA']['tl_iso_payment']['palettes']['vrpayment'] = '{type_legend},name,label,type;{note_legend:hide},note;{config_legend},new_order_status,quantity_mode,minimum_quantity,maximum_quantity,minimum_total,maximum_total,countries,shipping_modules,product_types,product_types_condition,config_ids;{gateway_legend},vrpayment_token, vrpayment_entityid, vrpayment_brand,vrpayment_type,vrpayment_brandlogo;{vrpayment_config_legend},vrpayment_shopperResultUrl;{price_legend:hide},price,tax_class;{enabled_legend},enabled,debug,logging';
 
 // Additional Fields
 $GLOBALS['TL_DCA']['tl_iso_payment']['fields']['vrpayment_token'] = array
@@ -51,3 +51,18 @@ $GLOBALS['TL_DCA']['tl_iso_payment']['fields']['vrpayment_brandlogo'] = array
     'eval'                    => array('fieldType'=>'radio', 'filesOnly'=>true, 'mandatory'=>true, 'tl_class'=>'clr', 'extensions'=>'jpg,png,jpeg,gif'),
     'sql'                     => "binary(16) NULL"
 );
+
+$GLOBALS['TL_DCA']['tl_iso_payment']['fields']['vrpayment_shopperResultUrl'] = array
+(
+    'label'                 => &$GLOBALS['TL_LANG']['tl_iso_payment']['vrpayment_shopperResultUrl'],
+    'exclude'                 => true,
+    'inputType'                 => 'pageTree',
+    'foreignKey'                => 'tl_page.title',
+    'eval'                      => array('fieldType'=>'radio', 'mandatory'=>true, 'tl_class'=>'clr'),
+    'explanation'               => 'jumpTo',
+    'sql'                       => "int(10) unsigned NOT NULL default '0'",
+    'relation'                  => array('type'=>'hasOne', 'load'=>'lazy'),
+);
+
+
+

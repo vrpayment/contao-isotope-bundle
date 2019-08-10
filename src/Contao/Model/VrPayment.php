@@ -48,12 +48,12 @@ class VrPayment extends Payment implements IsotopePayment
         $brand->setIsotopeOrderableProductCollection($objOrder);
 
         /** @var \Vrpayment\ContaoIsotopeBundle\Client $client */
-        $client = new \Vrpayment\ContaoIsotopeBundle\Client('OGFjN2E0Yzc2YmRmYWU0MzAxNmJlMTdkNWZhODA0NWN8S3lKczVocFd6eQ==');
+        $client = new \Vrpayment\ContaoIsotopeBundle\Client($objOrder->getPaymentMethod()->vrpayment_token, true);
 
         /** @var ResponseInterface $response */
-        $response = $client->send($brand->getPaymentData());
-        dump($response->getStatusCode());
-        dump($response->getBody()); exit;
+        $response = $client->send($objOrder->getPaymentMethod()->vrpayment_type, $brand->getPaymentData());
+
+        dump($response->json()); exit;
 
 
         $arrData = [];
@@ -68,28 +68,12 @@ class VrPayment extends Payment implements IsotopePayment
 
         $arrData['review']['total'] = Isotope::formatPriceWithCurrency($objOrder->getTotal());
         $arrData['review']['subtotal'] = Isotope::formatPriceWithCurrency($objOrder->getSubtotal());
+        $arrData['review']['hasCopyPayPaymentForm'] = $brand->hasPaymentForm();
 
         /** @var Template|\stdClass $objTemplate */
         $objTemplate = new Template('iso_payment_vrpayment');
         $objTemplate->setData($arrData);
 
         return $objTemplate->parse();
-    }
-
-    protected function getPaymentData(IsotopeOrderableCollection $objOrder)
-    {
-        switch ($objOrder->getPaymentMethod()->vrpayment_brand) {
-
-            case 'ENTERPAY':
-
-                return new PaymentDataEnterpay($objOrder);
-
-            default:
-
-                return null;
-        }
-
-
-
     }
 }

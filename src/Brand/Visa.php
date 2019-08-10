@@ -12,13 +12,19 @@
 namespace Vrpayment\ContaoIsotopeBundle\Brand;
 
 
+use Contao\FrontendTemplate;
 use Isotope\Interfaces\IsotopeOrderableCollection;
 
 class Visa extends AbstractBrand implements BrandInterface
 {
     public function getPaymentData()
     {
-        // TODO: Implement getPaymentData() method.
+        $data = "entityId=".$this->getEntityId() .
+            "&amount=" .$this->getAmount() .
+            "&currency=" . $this->getCurrency() .
+            "&paymentType=" . $this->getPaymentType();
+
+        return $data;
     }
 
     /**
@@ -30,5 +36,23 @@ class Visa extends AbstractBrand implements BrandInterface
         $this->order = $orderableCollection;
 
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasPaymentForm()
+    {
+        return true;
+    }
+
+    public function getPaymentForm()
+    {
+
+        $template = new FrontendTemplate('vrpayment_debit_checkoutform');
+        $template->shopperResultUrl = $this->order->getPaymentMethod()->vrpayment_shopperResultUrl;
+        $template->brand = $this->order->getPaymentMethod()->vrpayment_brand;
+
+        return $template->parse();
     }
 }

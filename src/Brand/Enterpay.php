@@ -13,6 +13,7 @@ namespace Vrpayment\ContaoIsotopeBundle\Brand;
 
 
 use Isotope\Interfaces\IsotopeOrderableCollection;
+use Vrpayment\ContaoIsotopeBundle\Http\ResponseInterface;
 use Vrpayment\ContaoIsotopeBundle\StaticHelper;
 
 class Enterpay extends AbstractBrand
@@ -45,5 +46,18 @@ class Enterpay extends AbstractBrand
         $this->order = $orderableCollection;
 
         return $this;
+    }
+
+    /**
+     * @return bool
+     */
+    public function hasPaymentForm()
+    {
+        return false;
+    }
+
+    public function getPaymentForm()
+    {
+        return '';
     }
 }
