@@ -13,8 +13,4 @@
             <li><span>Bestellsumme:</span> <?= $this->review['total']; ?></li>
         </ul>
     </div>
-    <div class="column paymenttypes right">
-        <h6>Ihre Bezahlvarianten</h6>
-        <?= $this->paymentTypes; ?>
-    </div>
 </div>

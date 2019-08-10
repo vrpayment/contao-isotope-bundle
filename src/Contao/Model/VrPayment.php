@@ -23,6 +23,9 @@ use Isotope\Isotope;
 use Isotope\Model\Payment;
 use Isotope\Model\ProductCollection\Order;
 use Isotope\Template;
+use Vrpayment\ContaoIsotopeBundle\Brand\BrandFactory;
+use Vrpayment\ContaoIsotopeBundle\Brand\BrandInterface;
+use Vrpayment\ContaoIsotopeBundle\Http\ResponseInterface;
 use Vrpayment\ContaoIsotopeBundle\Payment\PaymentDataEnterpay;
 use Vrpayment\ContaoIsotopeBundle\Payment\PaymentDataFactory;
 
@@ -30,10 +33,6 @@ class VrPayment extends Payment implements IsotopePayment
 {
     public function processPayment(IsotopeProductCollection $objOrder, \Module $objModule)
     {
-        dump($objOrder); exit;
-
-        $apiManager = System::getContainer()->get('Vrpayment\ContaoIsotopeBundle\Api\ApiManager');
-        $apiManager->initializeWithToken('OGFjN2E0Yzc2YmRmYWU0MzAxNmJlMTdkNWZhODA0NWN8S3lKczVocFd6eQ==', true);
     }
 
     public function checkoutForm(IsotopeProductCollection $objOrder, \Module $objModule)
@@ -43,12 +42,19 @@ class VrPayment extends Payment implements IsotopePayment
 
             return false;
         }
-        dump($objOrder->getPaymentMethod());
 
-        dump($this->getPaymentData($objOrder)); exit;
+        /** @var BrandInterface $brand */
+        $brand = BrandFactory::getBrandByPaymentType($objOrder->getPaymentMethod()->vrpayment_brand);
+        $brand->setIsotopeOrderableProductCollection($objOrder);
 
-        $apiManager = System::getContainer()->get('Vrpayment\ContaoIsotopeBundle\Api\ApiManager');
-        $apiManager->initializeWithToken('OGFjN2E0Yzc2YmRmYWU0MzAxNmJlMTdkNWZhODA0NWN8S3lKczVocFd6eQ==', true);
+        /** @var \Vrpayment\ContaoIsotopeBundle\Client $client */
+        $client = new \Vrpayment\ContaoIsotopeBundle\Client('OGFjN2E0Yzc2YmRmYWU0MzAxNmJlMTdkNWZhODA0NWN8S3lKczVocFd6eQ==');
+
+        /** @var ResponseInterface $response */
+        $response = $client->send($brand->getPaymentData());
+        dump($response->getStatusCode());
+        dump($response->getBody()); exit;
+
 
         $arrData = [];
 
@@ -62,8 +68,6 @@ class VrPayment extends Payment implements IsotopePayment
 
         $arrData['review']['total'] = Isotope::formatPriceWithCurrency($objOrder->getTotal());
         $arrData['review']['subtotal'] = Isotope::formatPriceWithCurrency($objOrder->getSubtotal());
-
-        $arrData['paymentTypes'] = $this->getPaymentTypes($objOrder->getPaymentMethod());
 
         /** @var Template|\stdClass $objTemplate */
         $objTemplate = new Template('iso_payment_vrpayment');

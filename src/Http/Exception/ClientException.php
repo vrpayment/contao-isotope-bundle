@@ -9,11 +9,9 @@
  */
 
 
-namespace Vrpayment\ContaoIsotopeBundle\Payment;
+namespace Vrpayment\ContaoIsotopeBundle\Http\Exception;
 
 
-use Ramsey\Uuid\Uuid;
+class ClientException extends \Exception {
 
-abstract class AbstractPaymentData
-{
 }

@@ -16,7 +16,8 @@
         "guzzlehttp/guzzle": "^6.3",
         "symfony/monolog-bundle": "^3.4",
         "isotope/isotope-core": "^2.5",
-        "ext-curl": "*"
+        "ext-curl": "*",
+        "ramsey/uuid": "^3.8"
     },
     "conflict": {
         "contao/core": "*",

@@ -52,6 +52,9 @@ class PaymentData
     /** @var string */
     protected $shopperResultUrl;
 
+    /** @var [] */
+    protected $cardItems;
+
     /**
      * @return string
      */
@@ -283,6 +286,24 @@ class PaymentData
     public function setShopperResultUrl(string $shopperResultUrl): PaymentData
     {
         $this->shopperResultUrl = $shopperResultUrl;
+        return $this;
+    }
+
+    /**
+     * @return mixed
+     */
+    public function getCardItems()
+    {
+        return $this->cardItems;
+    }
+
+    /**
+     * @param mixed $cardItems
+     * @return PaymentData
+     */
+    public function setCardItems($cardItems)
+    {
+        $this->cardItems = $cardItems;
         return $this;
     }
 }
