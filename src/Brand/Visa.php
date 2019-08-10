@@ -12,8 +12,11 @@
 namespace Vrpayment\ContaoIsotopeBundle\Brand;
 
 
+use Contao\Environment;
 use Contao\FrontendTemplate;
+use Contao\PageModel;
 use Isotope\Interfaces\IsotopeOrderableCollection;
+use Vrpayment\ContaoIsotopeBundle\Http\ResponseInterface;
 
 class Visa extends AbstractBrand implements BrandInterface
 {
@@ -46,12 +49,18 @@ class Visa extends AbstractBrand implements BrandInterface
         return true;
     }
 
-    public function getPaymentForm()
+    /**
+     * @param ResponseInterface $response
+     * @param string $defaultUrl
+     * @return string
+     */
+    public function getPaymentForm(ResponseInterface $response, $defaultUrl)
     {
-
         $template = new FrontendTemplate('vrpayment_debit_checkoutform');
-        $template->shopperResultUrl = $this->order->getPaymentMethod()->vrpayment_shopperResultUrl;
+        $template->shopperResultUrl = Environment::get('url').'/'.PageModel::findOneBy('id', $this->order->getPaymentMethod()->vrpayment_shopperResultUrl)->getFrontendUrl();
         $template->brand = $this->order->getPaymentMethod()->vrpayment_brand;
+        $template->defaultUrl = $defaultUrl;
+        $template->checkoutID = $this->getPaymentFormCheckoutId($response->json());
 
         return $template->parse();
     }

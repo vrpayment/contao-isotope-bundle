@@ -12,6 +12,7 @@
 namespace Vrpayment\ContaoIsotopeBundle;
 
 
+use Contao\Environment;
 use Ramsey\Uuid\Uuid;
 use Ramsey\Uuid\Exception\UnsatisfiedDependencyException;
 
@@ -26,5 +27,4 @@ class StaticHelper
     {
         return md5(random_bytes($length));
     }
-
 }

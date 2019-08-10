@@ -26,8 +26,10 @@ interface BrandInterface
     public function hasPaymentForm();
 
     /**
+     * @param ResponseInterface $response
+     * @param string $defaultUrl
      * @return string
      */
-    public function getPaymentForm();
+    public function getPaymentForm(ResponseInterface $response, $defaultUrl);
 
 }

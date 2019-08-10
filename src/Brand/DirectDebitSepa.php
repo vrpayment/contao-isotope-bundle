@@ -12,27 +12,20 @@
 namespace Vrpayment\ContaoIsotopeBundle\Brand;
 
 
+use Contao\Environment;
+use Contao\FrontendTemplate;
+use Contao\PageModel;
 use Isotope\Interfaces\IsotopeOrderableCollection;
 use Vrpayment\ContaoIsotopeBundle\Http\ResponseInterface;
-use Vrpayment\ContaoIsotopeBundle\StaticHelper;
 
-class Enterpay extends AbstractBrand
+class DirectDebitSepa extends AbstractBrand implements BrandInterface
 {
     public function getPaymentData()
     {
         $data = "entityId=".$this->getEntityId() .
-            "&customParameters[merchantId]=" . StaticHelper::getUniqueIdentifier() .
             "&amount=" .$this->getAmount() .
             "&currency=" . $this->getCurrency() .
-            "&paymentBrand=" . $this->getPaymentBrand() .
-            "&paymentType=" . $this->getPaymentType() .
-            "&billing.city=" . $this->getBillingAddress()->city .
-            "&billing.postcode=" . $this->getBillingAddress()->postal .
-            "&billing.street1=" . $this->getBillingAddress()->street_1 . $this->getCartItems().
-            "&shipping.city=". $this->getShippingAddress()->city .
-            "&shipping.postcode=". $this->getShippingAddress()->postal .
-            "&shipping.street1=". $this->getShippingAddress()->street_1 .
-            "&shopperResultUrl=https://www.google.de";
+            "&paymentType=" . $this->getPaymentType();
 
         return $data;
     }
@@ -53,11 +46,22 @@ class Enterpay extends AbstractBrand
      */
     public function hasPaymentForm()
     {
-        return false;
+        return true;
     }
 
-    public function getPaymentForm(ResponseInterface $response, $defaultUrl = '')
+    /**
+     * @param ResponseInterface $response
+     * @param string $defaultUrl
+     * @return string
+     */
+    public function getPaymentForm(ResponseInterface $response, $defaultUrl)
     {
-        return '';
+        $template = new FrontendTemplate('vrpayment_debit_checkoutform');
+        $template->shopperResultUrl = Environment::get('url').'/'.PageModel::findOneBy('id', $this->order->getPaymentMethod()->vrpayment_shopperResultUrl)->getFrontendUrl();
+        $template->brand = $this->order->getPaymentMethod()->vrpayment_brand;
+        $template->defaultUrl = $defaultUrl;
+        $template->checkoutID = $this->getPaymentFormCheckoutId($response->json());
+
+        return $template->parse();
     }
 }

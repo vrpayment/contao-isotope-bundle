@@ -132,4 +132,18 @@ abstract class AbstractBrand implements BrandInterface
     {
         return number_format($item->getTotalPrice() - $item->getTaxFreeTotalPrice(), 2);
     }
+
+    /**
+     * @param $array
+     */
+    protected function getPaymentFormCheckoutId($array)
+    {
+        if('000.200.100' === $array['result']['code'])
+        {
+            return $array['id'];
+        }
+
+        return false;
+
+    }
 }

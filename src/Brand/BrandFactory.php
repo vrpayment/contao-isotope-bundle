@@ -34,6 +34,10 @@ class BrandFactory
 
                 break;
 
+            case 'DIRECTDEBIT_SEPA':
+
+                return new DirectDebitSepa();
+
             default:
 
                 return null;

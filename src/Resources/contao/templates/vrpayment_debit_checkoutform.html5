@@ -1,0 +1,6 @@
+<?php if($this->checkoutID): ?>
+    <script src="<?= $this->defaultUrl; ?>paymentWidgets.js?checkoutId=<?= $this->checkoutID; ?>"></script>
+    <form action="<?= $this->shopperResultUrl; ?>" class="paymentWidgets" data-brands="<?= $this->brand; ?>"></form>
+<?php else: ?>
+
+<?php endif; ?>

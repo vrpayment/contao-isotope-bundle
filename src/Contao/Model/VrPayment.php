@@ -11,6 +11,7 @@
 
 namespace Vrpayment\ContaoIsotopeBundle\Contao\Model;
 
+use Contao\FrontendTemplate;
 use Contao\StringUtil;
 use Contao\System;
 use GuzzleHttp\Client;
@@ -53,9 +54,6 @@ class VrPayment extends Payment implements IsotopePayment
         /** @var ResponseInterface $response */
         $response = $client->send($objOrder->getPaymentMethod()->vrpayment_type, $brand->getPaymentData());
 
-        dump($response->json()); exit;
-
-
         $arrData = [];
 
         foreach ($objOrder->getItems() as $objItem) {
@@ -68,10 +66,10 @@ class VrPayment extends Payment implements IsotopePayment
 
         $arrData['review']['total'] = Isotope::formatPriceWithCurrency($objOrder->getTotal());
         $arrData['review']['subtotal'] = Isotope::formatPriceWithCurrency($objOrder->getSubtotal());
-        $arrData['review']['hasCopyPayPaymentForm'] = $brand->hasPaymentForm();
+        $arrData['review']['copyPayPaymentForm'] = ($brand->hasPaymentForm()) ? $brand->getPaymentForm($response, $client->getDefaultUrl()) : false;
 
         /** @var Template|\stdClass $objTemplate */
-        $objTemplate = new Template('iso_payment_vrpayment');
+        $objTemplate = new FrontendTemplate('iso_payment_vrpayment');
         $objTemplate->setData($arrData);
 
         return $objTemplate->parse();
