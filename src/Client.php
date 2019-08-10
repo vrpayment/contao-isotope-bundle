@@ -11,6 +11,7 @@
 
 namespace Vrpayment\ContaoIsotopeBundle;
 
+use Isotope\Interfaces\IsotopeOrderableCollection;
 use Psr\Log\LoggerInterface;
 use Vrpayment\ContaoIsotopeBundle\Http\CurlClient;
 use Vrpayment\ContaoIsotopeBundle\Http\Exception\ClientException;
@@ -19,15 +20,17 @@ use Vrpayment\ContaoIsotopeBundle\Http\ResponseInterface;
 
 class Client
 {
-    const DEFAULT_VRPAYMENT_URL = 'https://vr-pay-ecommerce.de/v1/';
+    const DEFAULT_VRPAYMENT_URL = 'https://vr-pay-ecommerce.de';
 
-    const TEST_VRPAYMENT_URL = 'https://test.vr-pay-ecommerce.de/v1/';
+    const TEST_VRPAYMENT_URL = 'https://test.vr-pay-ecommerce.de';
 
-    const PAYMENTS_ROUTE = 'payments';
+    const PAYMENTS_ROUTE = '/v1/payments';
 
-    const REGISTRATIONS_ROUTE = 'registrations';
+    const REGISTRATIONS_ROUTE = '/v1/registrations';
 
-    const PREPARECHECKOUT_ROUTE = 'checkouts';
+    const PREPARECHECKOUT_ROUTE = '/v1/checkouts';
+
+    const WIDGET_JS_ROUTE = '/v1/paymentWidgets.js';
 
     /**
      * @var string
@@ -81,6 +84,22 @@ class Client
     }
 
     /**
+     * @param IsotopeOrderableCollection $orderableCollection
+     * @param string                     $ressourcePath
+     *
+     * @return Response|ResponseInterface
+     */
+    public function getPaymentStatus(IsotopeOrderableCollection $orderableCollection, $ressourcePath)
+    {
+        $curl = new CurlClient();
+        $response = $curl
+            ->authorize($this->getToken())
+            ->get($this->getDefaultUrl().$ressourcePath.'?entityId='.$orderableCollection->getPaymentMethod()->vrpayment_entityid);
+
+        return $response;
+    }
+
+    /**
      * @return string
      */
     public function getToken(): string
@@ -123,9 +142,9 @@ class Client
     /**
      * @return string
      */
-    public function getUrlPaymentWidgetJs(): string
+    public function getUrlWidgetJs()
     {
-        return $this->urlPaymentWidgetJs;
+        return $this->getDefaultUrl().self::WIDGET_JS_ROUTE;
     }
 
     /**

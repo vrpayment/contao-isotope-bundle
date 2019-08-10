@@ -133,6 +133,8 @@ class CurlClient implements ClientInterface
      */
     public function get($url, array $headers = [])
     {
+        $this->setOption(CURLOPT_CUSTOMREQUEST, 'GET');
+
         return $this->send(self::METHOD_GET, $url, $headers);
     }
 

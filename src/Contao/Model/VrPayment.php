@@ -11,22 +11,30 @@
 
 namespace Vrpayment\ContaoIsotopeBundle\Contao\Model;
 
-use Contao\FrontendTemplate;
-use GuzzleHttp\Client;
+use Contao\Controller;
+use Contao\Input;
 use Isotope\Interfaces\IsotopePayment;
 use Isotope\Interfaces\IsotopeProductCollection;
 use Isotope\Interfaces\IsotopePurchasableCollection;
 use Isotope\Isotope;
 use Isotope\Model\Payment;
+use Isotope\Module\Checkout;
 use Isotope\Template;
 use Vrpayment\ContaoIsotopeBundle\Brand\BrandFactory;
 use Vrpayment\ContaoIsotopeBundle\Brand\BrandInterface;
+use Vrpayment\ContaoIsotopeBundle\Client;
 use Vrpayment\ContaoIsotopeBundle\Http\ResponseInterface;
 
 class VrPayment extends Payment implements IsotopePayment
 {
+    /**
+     * @var string
+     */
+    protected $ressourcePath;
+
     public function processPayment(IsotopeProductCollection $objOrder, \Module $objModule)
     {
+        return true;
     }
 
     public function checkoutForm(IsotopeProductCollection $objOrder, \Module $objModule)
@@ -37,12 +45,27 @@ class VrPayment extends Payment implements IsotopePayment
             return false;
         }
 
+        // Set Ressource Path if calling payment Status is available
+        $this->ressourcePath = Input::get('resourcePath');
+
         /** @var BrandInterface $brand */
         $brand = BrandFactory::getBrandByPaymentType($objOrder->getPaymentMethod()->vrpayment_brand);
         $brand->setIsotopeOrderableProductCollection($objOrder);
 
         /** @var \Vrpayment\ContaoIsotopeBundle\Client $client */
-        $client = new \Vrpayment\ContaoIsotopeBundle\Client($objOrder->getPaymentMethod()->vrpayment_token, true);
+        $client = new Client($objOrder->getPaymentMethod()->vrpayment_token, true);
+
+        if (null !== $this->ressourcePath) {
+            // TODO: check Response and validate/compare Values
+            $response = $client->getPaymentStatus($objOrder, $this->ressourcePath);
+
+            $objOrder->checkout();
+            $objOrder->updateOrderStatus($this->new_order_status);
+
+            // Redirect to Checkout
+            $strUrl = Checkout::generateUrlForStep('complete', $objOrder);
+            Controller::redirect($strUrl, 301);
+        }
 
         /** @var ResponseInterface $response */
         $response = $client->send($objOrder->getPaymentMethod()->vrpayment_type, $brand->getPaymentData());
@@ -59,10 +82,10 @@ class VrPayment extends Payment implements IsotopePayment
 
         $arrData['review']['total'] = Isotope::formatPriceWithCurrency($objOrder->getTotal());
         $arrData['review']['subtotal'] = Isotope::formatPriceWithCurrency($objOrder->getSubtotal());
-        $arrData['review']['copyPayPaymentForm'] = ($brand->hasPaymentForm()) ? $brand->getPaymentForm($response, $client->getDefaultUrl()) : false;
+        $arrData['review']['copyPayPaymentForm'] = ($brand->hasPaymentForm()) ? $brand->getPaymentForm($response, $client->getUrlWidgetJs()) : false;
 
         /** @var Template|\stdClass $objTemplate */
-        $objTemplate = new FrontendTemplate('iso_payment_vrpayment');
+        $objTemplate = new Template('iso_payment_vrpayment');
         $objTemplate->setData($arrData);
 
         return $objTemplate->parse();
