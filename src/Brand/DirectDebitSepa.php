@@ -58,7 +58,7 @@ class DirectDebitSepa extends AbstractBrand implements BrandInterface
     public function getPaymentForm(ResponseInterface $response, $defaultUrl)
     {
         $template = new FrontendTemplate('vrpayment_debit_checkoutform');
-        $template->shopperResultUrl = Environment::get('url').'/'.PageModel::findOneBy('id', $this->order->getPaymentMethod()->vrpayment_shopperResultUrl)->getFrontendUrl();
+        $template->shopperResultUrl = Environment::get('uri');
         $template->brand = $this->order->getPaymentMethod()->vrpayment_brand;
         $template->defaultUrl = $defaultUrl;
         $template->checkoutID = $this->getPaymentFormCheckoutId($response->json());
