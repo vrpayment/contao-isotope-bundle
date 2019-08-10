@@ -13,6 +13,7 @@ namespace Vrpayment\ContaoIsotopeBundle\Contao\Model;
 
 use Contao\Controller;
 use Contao\Input;
+use Contao\System;
 use Isotope\Interfaces\IsotopePayment;
 use Isotope\Interfaces\IsotopeProductCollection;
 use Isotope\Interfaces\IsotopePurchasableCollection;
@@ -24,6 +25,7 @@ use Vrpayment\ContaoIsotopeBundle\Brand\BrandFactory;
 use Vrpayment\ContaoIsotopeBundle\Brand\BrandInterface;
 use Vrpayment\ContaoIsotopeBundle\Client;
 use Vrpayment\ContaoIsotopeBundle\Http\ResponseInterface;
+use Vrpayment\ContaoIsotopeBundle\ResultCodeHandler;
 
 class VrPayment extends Payment implements IsotopePayment
 {
@@ -48,6 +50,9 @@ class VrPayment extends Payment implements IsotopePayment
         // Set Ressource Path if calling payment Status is available
         $this->ressourcePath = Input::get('resourcePath');
 
+        /** @var ResultCodeHandler $resultCodeValiadtor */
+        $resultCodeValiadtor = System::getContainer()->get('Vrpayment\ContaoIsotopeBundle\ResultCodeHandler');
+
         /** @var BrandInterface $brand */
         $brand = BrandFactory::getBrandByPaymentType($objOrder->getPaymentMethod()->vrpayment_brand);
         $brand->setIsotopeOrderableProductCollection($objOrder);
@@ -56,19 +61,29 @@ class VrPayment extends Payment implements IsotopePayment
         $client = new Client($objOrder->getPaymentMethod()->vrpayment_token, true);
 
         if (null !== $this->ressourcePath) {
-            // TODO: check Response and validate/compare Values
-            $response = $client->getPaymentStatus($objOrder, $this->ressourcePath);
 
-            $objOrder->checkout();
-            $objOrder->updateOrderStatus($this->new_order_status);
+            $response = $client->getPaymentStatus($objOrder, $this->ressourcePath);
+            $resultCodeValiadtor->proceedResponseJson($response->json());
+
+            if($resultCodeValiadtor->isSuccessfullyProcessedTransaction())
+            {
+                $objOrder->checkout();
+                $objOrder->updateOrderStatus($this->new_order_status);
+
+                // Redirect to Checkout
+                $strUrl = Checkout::generateUrlForStep('complete', $objOrder);
+                Controller::redirect($strUrl, 301);
+            }
 
             // Redirect to Checkout
-            $strUrl = Checkout::generateUrlForStep('complete', $objOrder);
+            $strUrl = Checkout::generateUrlForStep('process', $objOrder);
             Controller::redirect($strUrl, 301);
+
         }
 
         /** @var ResponseInterface $response */
         $response = $client->send($objOrder->getPaymentMethod()->vrpayment_type, $brand->getPaymentData());
+        $resultCodeValiadtor->proceedResponseJson($response->json());
 
         $arrData = [];
 

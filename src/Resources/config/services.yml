@@ -8,17 +8,7 @@ services:
             calls:
                 - ["setContainer", ["@service_container"]]
 
-    # Handle API Manager as a factored Service
-    Vrpayment\ContaoIsotopeBundle\Api\ApiManagerFactory: ~
-
-    Vrpayment\ContaoIsotopeBundle\Api\ApiManager:
-        class: Vrpayment\ContaoIsotopeBundle\Api\ApiManager
-        factory: ['@Vrpayment\ContaoIsotopeBundle\Api\ApiManagerFactory', createApiManager]
+    Vrpayment\ContaoIsotopeBundle\ResultCodeHandler:
+        class: Vrpayment\ContaoIsotopeBundle\ResultCodeHandler
         public: true
-        autowire: true
-        arguments:
-            - "@doctrine.dbal.default_connection"
-            - "@monolog.logger"
-        tags:
-            - { name: monolog.logger, channel: app }
 
