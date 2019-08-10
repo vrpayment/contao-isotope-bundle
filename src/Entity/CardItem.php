@@ -1,16 +1,15 @@
 <?php
-/**
- * contao-isotope-bundle for Contao Open Source CMS
+
+/*
+ * VR Payment GmbH Contao Isotope Bundle
  *
- * Copyright (C) 2019 47GradNord - Agentur für Internetlösungen
+ * @copyright  Copyright (c) 2019-2019, VR Payment GmbH
+ * @author     VR Payment GmbH <info@vr-payment.de>
  *
- * @license    commercial
- * @author     Holger Neuner
+ * @license LGPL-3.0-or-later
  */
 
-
 namespace Vrpayment\ContaoIsotopeBundle\Entity;
-
 
 class CardItem
 {
@@ -45,11 +44,13 @@ class CardItem
 
     /**
      * @param string $name
+     *
      * @return CardItem
      */
-    public function setName(string $name): CardItem
+    public function setName(string $name): self
     {
         $this->name = $name;
+
         return $this;
     }
 
@@ -63,11 +64,13 @@ class CardItem
 
     /**
      * @param string $merchantItemId
+     *
      * @return CardItem
      */
-    public function setMerchantItemId(string $merchantItemId): CardItem
+    public function setMerchantItemId(string $merchantItemId): self
     {
         $this->merchantItemId = $merchantItemId;
+
         return $this;
     }
 
@@ -81,11 +84,13 @@ class CardItem
 
     /**
      * @param float $price
+     *
      * @return CardItem
      */
-    public function setPrice(float $price): CardItem
+    public function setPrice(float $price): self
     {
         $this->price = $price;
+
         return $this;
     }
 
@@ -99,11 +104,13 @@ class CardItem
 
     /**
      * @param int $quantity
+     *
      * @return CardItem
      */
-    public function setQuantity(int $quantity): CardItem
+    public function setQuantity(int $quantity): self
     {
         $this->quantity = $quantity;
+
         return $this;
     }
 
@@ -117,11 +124,13 @@ class CardItem
 
     /**
      * @param float $totalAmount
+     *
      * @return CardItem
      */
-    public function setTotalAmount(float $totalAmount): CardItem
+    public function setTotalAmount(float $totalAmount): self
     {
         $this->totalAmount = $totalAmount;
+
         return $this;
     }
 
@@ -135,11 +144,13 @@ class CardItem
 
     /**
      * @param float $tax
+     *
      * @return CardItem
      */
-    public function setTax(float $tax): CardItem
+    public function setTax(float $tax): self
     {
         $this->tax = $tax;
+
         return $this;
     }
 
@@ -153,11 +164,13 @@ class CardItem
 
     /**
      * @param float $totalTaxAmount
+     *
      * @return CardItem
      */
-    public function setTotalTaxAmount(float $totalTaxAmount): CardItem
+    public function setTotalTaxAmount(float $totalTaxAmount): self
     {
         $this->totalTaxAmount = $totalTaxAmount;
+
         return $this;
     }
 }

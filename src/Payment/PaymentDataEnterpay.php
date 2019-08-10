@@ -1,23 +1,21 @@
 <?php
-/**
- * contao-isotope-bundle for Contao Open Source CMS
- *
- * Copyright (C) 2019 47GradNord - Agentur für Internetlösungen
- *
- * @license    commercial
- * @author     Holger Neuner
- */
 
+/*
+ * VR Payment GmbH Contao Isotope Bundle
+ *
+ * @copyright  Copyright (c) 2019-2019, VR Payment GmbH
+ * @author     VR Payment GmbH <info@vr-payment.de>
+ *
+ * @license LGPL-3.0-or-later
+ */
 
 namespace Vrpayment\ContaoIsotopeBundle\Payment;
 
 use Isotope\Interfaces\IsotopeOrderableCollection;
-use Isotope\Interfaces\IsotopeProductCollection;
 use Isotope\Model\ProductCollection\Order;
 use Isotope\Model\ProductCollectionItem;
 use Vrpayment\ContaoIsotopeBundle\Entity\CardItem;
 use Vrpayment\ContaoIsotopeBundle\Entity\PaymentData;
-use Vrpayment\ContaoIsotopeBundle\StaticHelper;
 
 class PaymentDataEnterpay extends AbstractPaymentData implements PaymentDataInterface
 {
@@ -45,7 +43,7 @@ class PaymentDataEnterpay extends AbstractPaymentData implements PaymentDataInte
     /**
      * @return PaymentData
      */
-    public function setPaymentData(): PaymentDataEnterpay
+    public function setPaymentData(): self
     {
         /** @var PaymentData $paymentData */
         $paymentData = new PaymentData();
@@ -64,8 +62,7 @@ class PaymentDataEnterpay extends AbstractPaymentData implements PaymentDataInte
 
         $cardItems = [];
 
-        foreach($this->order->getItems() as $productCollectionItem)
-        {
+        foreach ($this->order->getItems() as $productCollectionItem) {
             $cardItems[] = $this->getItem($productCollectionItem);
         }
 
@@ -74,6 +71,11 @@ class PaymentDataEnterpay extends AbstractPaymentData implements PaymentDataInte
         $this->paymentData = $paymentData;
 
         return $this;
+    }
+
+    public function getRequestString()
+    {
+        return '';
     }
 
     protected function getItem(ProductCollectionItem $item)
@@ -89,16 +91,4 @@ class PaymentDataEnterpay extends AbstractPaymentData implements PaymentDataInte
 
         return $cartItem;
     }
-
-    public function getRequestString()
-    {
-        return '';
-
-    }
-
-
-
-
-
-
 }

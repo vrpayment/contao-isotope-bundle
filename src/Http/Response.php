@@ -1,16 +1,15 @@
 <?php
-/**
- * contao-isotope-bundle for Contao Open Source CMS
+
+/*
+ * VR Payment GmbH Contao Isotope Bundle
  *
- * Copyright (C) 2019 47GradNord - Agentur für Internetlösungen
+ * @copyright  Copyright (c) 2019-2019, VR Payment GmbH
+ * @author     VR Payment GmbH <info@vr-payment.de>
  *
- * @license    commercial
- * @author     Holger Neuner
+ * @license LGPL-3.0-or-later
  */
 
-
 namespace Vrpayment\ContaoIsotopeBundle\Http;
-
 
 use Vrpayment\ContaoIsotopeBundle\Http\Exception\ResponseException;
 
@@ -39,10 +38,10 @@ class Response implements ResponseInterface
     /**
      * @var array
      */
-    private $headers = array();
+    private $headers = [];
 
     /**
-     * @param int  $statusCode
+     * @param int    $statusCode
      * @param array  $headers
      * @param mixed  $body
      * @param int    $errorCode
@@ -50,10 +49,10 @@ class Response implements ResponseInterface
      */
     public function __construct(
         $statusCode,
-        array $headers = array(),
+        array $headers = [],
         $body = null,
         $errorCode = 0,
-        $errorMessage = ""
+        $errorMessage = ''
     ) {
         $this->statusCode = $statusCode;
         $this->errorCode = $errorCode;
@@ -65,34 +64,37 @@ class Response implements ResponseInterface
     /**
      * @return int
      */
-    public function getStatusCode() {
+    public function getStatusCode()
+    {
         return $this->statusCode;
     }
 
     /**
      * @return mixed
      */
-    public function getBody() {
+    public function getBody()
+    {
         return $this->body;
     }
 
     /**
      * @param array $config
      *
-     * @return mixed
-     *
      * @throws ResponseException
+     *
+     * @return mixed
      */
-    public function json(array $config = array()) {
+    public function json(array $config = [])
+    {
         $json = json_decode(
             $this->body,
-            isset($config["object"]) ? (bool)!$config["object"] : true,
+            isset($config['object']) ? (bool) !$config['object'] : true,
             512,
-            isset($config["options"]) ? (int)$config["options"] : 0
+            isset($config['options']) ? (int) $config['options'] : 0
         );
 
         $error = json_last_error();
-        if ($error !== JSON_ERROR_NONE) {
+        if (JSON_ERROR_NONE !== $error) {
             throw new ResponseException();
         }
 
@@ -102,21 +104,24 @@ class Response implements ResponseInterface
     /**
      * @return array
      */
-    public function getHeaders() {
+    public function getHeaders()
+    {
         return $this->headers;
     }
 
     /**
      * @return int
      */
-    public function getErrorCode() {
+    public function getErrorCode()
+    {
         return $this->errorCode;
     }
 
     /**
      * @return string
      */
-    public function getErrorMessage() {
+    public function getErrorMessage()
+    {
         return $this->errorMessage;
     }
 }

@@ -1,20 +1,18 @@
 <?php
-/**
- * contao-isotope-bundle for Contao Open Source CMS
- *
- * Copyright (C) 2019 47GradNord - Agentur für Internetlösungen
- *
- * @license    commercial
- * @author     Holger Neuner
- */
 
+/*
+ * VR Payment GmbH Contao Isotope Bundle
+ *
+ * @copyright  Copyright (c) 2019-2019, VR Payment GmbH
+ * @author     VR Payment GmbH <info@vr-payment.de>
+ *
+ * @license LGPL-3.0-or-later
+ */
 
 namespace Vrpayment\ContaoIsotopeBundle\Brand;
 
-
 use Isotope\Interfaces\IsotopeOrderableCollection;
 use Isotope\Model\ProductCollectionItem;
-use Isotope\Model\TaxClass;
 use Isotope\Model\TaxRate;
 
 abstract class AbstractBrand implements BrandInterface
@@ -85,30 +83,41 @@ abstract class AbstractBrand implements BrandInterface
         $count = 0;
 
         /** @var ProductCollectionItem $item */
-        foreach($this->order->getItems() as $key => $item)
-        {
-            $cartItems .="&cart.items[".$count."].name=". $item->getName() .
-                "&cart.items[".$count."].merchantItemId=". $item->getSku() .
-                "&cart.items[".$count."].price=". number_format($item->getPrice(), 2) .
-                "&cart.items[".$count."].quantity=". $item->quantity .
-                "&cart.items[".$count."].totalAmount=". number_format($item->getTotalPrice(), 2) .
-                "&cart.items[".$count."].tax=". $this->getTaxRatePerCartItemFormatted($item) .
-                "&cart.items[".$count."].totalTaxAmount=" . $this->getTotalTaxAmount($item);
+        foreach ($this->order->getItems() as $key => $item) {
+            $cartItems .= '&cart.items['.$count.'].name='.$item->getName().
+                '&cart.items['.$count.'].merchantItemId='.$item->getSku().
+                '&cart.items['.$count.'].price='.number_format($item->getPrice(), 2).
+                '&cart.items['.$count.'].quantity='.$item->quantity.
+                '&cart.items['.$count.'].totalAmount='.number_format($item->getTotalPrice(), 2).
+                '&cart.items['.$count.'].tax='.$this->getTaxRatePerCartItemFormatted($item).
+                '&cart.items['.$count.'].totalTaxAmount='.$this->getTotalTaxAmount($item);
 
-            $count++;
+            ++$count;
         }
 
         return $cartItems;
     }
 
     /**
+     * @param $array
+     */
+    protected function getPaymentFormCheckoutId($array)
+    {
+        if ('000.200.100' === $array['result']['code']) {
+            return $array['id'];
+        }
+
+        return false;
+    }
+
+    /**
      * @param ProductCollectionItem $item
+     *
      * @return float
      */
     private function getTaxRatePerCartItemFormatted(ProductCollectionItem $item)
     {
-        if(!$item->hasProduct())
-        {
+        if (!$item->hasProduct()) {
             return 0.0;
         }
 
@@ -126,24 +135,11 @@ abstract class AbstractBrand implements BrandInterface
 
     /**
      * @param ProductCollectionItem $item
+     *
      * @return float
      */
     private function getTotalTaxAmount(ProductCollectionItem $item)
     {
         return number_format($item->getTotalPrice() - $item->getTaxFreeTotalPrice(), 2);
-    }
-
-    /**
-     * @param $array
-     */
-    protected function getPaymentFormCheckoutId($array)
-    {
-        if('000.200.100' === $array['result']['code'])
-        {
-            return $array['id'];
-        }
-
-        return false;
-
     }
 }

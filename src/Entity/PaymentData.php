@@ -1,16 +1,15 @@
 <?php
-/**
- * contao-isotope-bundle for Contao Open Source CMS
+
+/*
+ * VR Payment GmbH Contao Isotope Bundle
  *
- * Copyright (C) 2019 47GradNord - Agentur für Internetlösungen
+ * @copyright  Copyright (c) 2019-2019, VR Payment GmbH
+ * @author     VR Payment GmbH <info@vr-payment.de>
  *
- * @license    commercial
- * @author     Holger Neuner
+ * @license LGPL-3.0-or-later
  */
 
-
 namespace Vrpayment\ContaoIsotopeBundle\Entity;
-
 
 class PaymentData
 {
@@ -65,11 +64,13 @@ class PaymentData
 
     /**
      * @param string $customParametersMerchantId
+     *
      * @return PaymentData
      */
-    public function setCustomParametersMerchantId(string $customParametersMerchantId): PaymentData
+    public function setCustomParametersMerchantId(string $customParametersMerchantId): self
     {
         $this->customParametersMerchantId = $customParametersMerchantId;
+
         return $this;
     }
 
@@ -83,11 +84,13 @@ class PaymentData
 
     /**
      * @param string $entityId
+     *
      * @return PaymentData
      */
-    public function setEntityId(string $entityId): PaymentData
+    public function setEntityId(string $entityId): self
     {
         $this->entityId = $entityId;
+
         return $this;
     }
 
@@ -101,11 +104,13 @@ class PaymentData
 
     /**
      * @param float $amount
+     *
      * @return PaymentData
      */
-    public function setAmount(float $amount): PaymentData
+    public function setAmount(float $amount): self
     {
         $this->amount = $amount;
+
         return $this;
     }
 
@@ -119,11 +124,13 @@ class PaymentData
 
     /**
      * @param string $currenty
+     *
      * @return PaymentData
      */
-    public function setCurrenty(string $currenty): PaymentData
+    public function setCurrenty(string $currenty): self
     {
         $this->currenty = $currenty;
+
         return $this;
     }
 
@@ -137,11 +144,13 @@ class PaymentData
 
     /**
      * @param string $paymentBrand
+     *
      * @return PaymentData
      */
-    public function setPaymentBrand(string $paymentBrand): PaymentData
+    public function setPaymentBrand(string $paymentBrand): self
     {
         $this->paymentBrand = $paymentBrand;
+
         return $this;
     }
 
@@ -155,11 +164,13 @@ class PaymentData
 
     /**
      * @param string $paymentType
+     *
      * @return PaymentData
      */
-    public function setPaymentType(string $paymentType): PaymentData
+    public function setPaymentType(string $paymentType): self
     {
         $this->paymentType = $paymentType;
+
         return $this;
     }
 
@@ -173,11 +184,13 @@ class PaymentData
 
     /**
      * @param string $billingCity
+     *
      * @return PaymentData
      */
-    public function setBillingCity(string $billingCity): PaymentData
+    public function setBillingCity(string $billingCity): self
     {
         $this->billingCity = $billingCity;
+
         return $this;
     }
 
@@ -191,11 +204,13 @@ class PaymentData
 
     /**
      * @param string $billingPostcode
+     *
      * @return PaymentData
      */
-    public function setBillingPostcode(string $billingPostcode): PaymentData
+    public function setBillingPostcode(string $billingPostcode): self
     {
         $this->billingPostcode = $billingPostcode;
+
         return $this;
     }
 
@@ -209,11 +224,13 @@ class PaymentData
 
     /**
      * @param string $billingStreet1
+     *
      * @return PaymentData
      */
-    public function setBillingStreet1(string $billingStreet1): PaymentData
+    public function setBillingStreet1(string $billingStreet1): self
     {
         $this->billingStreet1 = $billingStreet1;
+
         return $this;
     }
 
@@ -227,11 +244,13 @@ class PaymentData
 
     /**
      * @param string $shippingCity
+     *
      * @return PaymentData
      */
-    public function setShippingCity(string $shippingCity): PaymentData
+    public function setShippingCity(string $shippingCity): self
     {
         $this->shippingCity = $shippingCity;
+
         return $this;
     }
 
@@ -245,11 +264,13 @@ class PaymentData
 
     /**
      * @param string $shippingPostcode
+     *
      * @return PaymentData
      */
-    public function setShippingPostcode(string $shippingPostcode): PaymentData
+    public function setShippingPostcode(string $shippingPostcode): self
     {
         $this->shippingPostcode = $shippingPostcode;
+
         return $this;
     }
 
@@ -263,11 +284,13 @@ class PaymentData
 
     /**
      * @param mixed $shippingStreet1
+     *
      * @return PaymentData
      */
     public function setShippingStreet1($shippingStreet1)
     {
         $this->shippingStreet1 = $shippingStreet1;
+
         return $this;
     }
 
@@ -281,11 +304,13 @@ class PaymentData
 
     /**
      * @param string $shopperResultUrl
+     *
      * @return PaymentData
      */
-    public function setShopperResultUrl(string $shopperResultUrl): PaymentData
+    public function setShopperResultUrl(string $shopperResultUrl): self
     {
         $this->shopperResultUrl = $shopperResultUrl;
+
         return $this;
     }
 
@@ -299,11 +324,13 @@ class PaymentData
 
     /**
      * @param mixed $cardItems
+     *
      * @return PaymentData
      */
     public function setCardItems($cardItems)
     {
         $this->cardItems = $cardItems;
+
         return $this;
     }
 }

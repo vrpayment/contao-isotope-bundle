@@ -15,7 +15,6 @@ use Contao\CoreBundle\ContaoCoreBundle;
 use Contao\ManagerPlugin\Bundle\BundlePluginInterface;
 use Contao\ManagerPlugin\Bundle\Config\BundleConfig;
 use Contao\ManagerPlugin\Bundle\Parser\ParserInterface;
-use Monolog\Logger;
 use Vrpayment\ContaoIsotopeBundle\ContaoIsotopeBundle;
 
 class Plugin implements BundlePluginInterface
@@ -29,7 +28,7 @@ class Plugin implements BundlePluginInterface
             BundleConfig::create(ContaoIsotopeBundle::class)
                 ->setLoadAfter([
                     ContaoCoreBundle::class,
-                    'isotope', ])
+                    'isotope', ]),
         ];
     }
 }

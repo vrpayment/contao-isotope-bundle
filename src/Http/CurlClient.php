@@ -1,16 +1,15 @@
 <?php
-/**
- * contao-isotope-bundle for Contao Open Source CMS
+
+/*
+ * VR Payment GmbH Contao Isotope Bundle
  *
- * Copyright (C) 2019 47GradNord - Agentur für Internetlösungen
+ * @copyright  Copyright (c) 2019-2019, VR Payment GmbH
+ * @author     VR Payment GmbH <info@vr-payment.de>
  *
- * @license    commercial
- * @author     Holger Neuner
+ * @license LGPL-3.0-or-later
  */
 
-
 namespace Vrpayment\ContaoIsotopeBundle\Http;
-
 
 use Vrpayment\ContaoIsotopeBundle\Http\Exception\ClientException;
 
@@ -19,6 +18,11 @@ class CurlClient implements ClientInterface
     const METHOD_GET = 'get';
     const METHOD_POST = 'post';
     const METHOD_PUT = 'put';
+
+    /**
+     * @var array
+     */
+    protected $additionalHeaders = [];
 
     /**
      * @var resource
@@ -30,13 +34,8 @@ class CurlClient implements ClientInterface
      */
     private static $defaultOptions = [
         CURLOPT_RETURNTRANSFER => true,
-        CURLOPT_SSL_VERIFYPEER => false
+        CURLOPT_SSL_VERIFYPEER => false,
     ];
-
-    /**
-     * @var array
-     */
-    protected $additionalHeaders = [];
 
     public function __construct()
     {
@@ -44,22 +43,27 @@ class CurlClient implements ClientInterface
         $this->setOptionArray(self::$defaultOptions);
     }
 
+    public function __destruct()
+    {
+        if (\is_resource($this->handle)) {
+            curl_close($this->handle);
+        }
+    }
+
     /**
      * @param string $option
      * @param mixed  $value
-     *
-     * @return void
      */
-    public static function setDefaultOption($option, $value) {
+    public static function setDefaultOption($option, $value)
+    {
         self::$defaultOptions[$option] = $value;
     }
 
     /**
      * @param array $options
-     *
-     * @return void
      */
-    public static function setDefaultOptions(array $options) {
+    public static function setDefaultOptions(array $options)
+    {
         self::$defaultOptions = $options;
     }
 
@@ -69,8 +73,10 @@ class CurlClient implements ClientInterface
      *
      * @return $this
      */
-    public function setOption($option, $value) {
+    public function setOption($option, $value)
+    {
         curl_setopt($this->handle, $option, $value);
+
         return $this;
     }
 
@@ -79,33 +85,27 @@ class CurlClient implements ClientInterface
      *
      * @return $this
      */
-    public function setOptionArray(array $options) {
+    public function setOptionArray(array $options)
+    {
         curl_setopt_array($this->handle, $options);
-        return $this;
-    }
 
-    /**
-     *
-     */
-    public function __destruct() {
-        if (is_resource($this->handle)) {
-            curl_close($this->handle);
-        }
+        return $this;
     }
 
     /**
      * @param string $method
      * @param string $url
-     * @param array $headers
+     * @param array  $headers
+     *
      * @return Response|ResponseInterface
      */
     public function send($method, $url, array $headers = [])
     {
         $this->setOption(CURLOPT_URL, $url);
 
-        $allHeaders = array();
+        $allHeaders = [];
         foreach ($this->mergeHeaders($headers, $this->additionalHeaders) as $k => $v) {
-            $allHeaders[] = $k . ': ' . $v;
+            $allHeaders[] = $k.': '.$v;
         }
 
         if (!empty($allHeaders)) {
@@ -127,27 +127,31 @@ class CurlClient implements ClientInterface
 
     /**
      * @param string $url
-     * @param array $headers
+     * @param array  $headers
+     *
      * @return Response|ResponseInterface
      */
-    public function get($url, array $headers = []) {
+    public function get($url, array $headers = [])
+    {
         return $this->send(self::METHOD_GET, $url, $headers);
     }
 
     /**
      * @param string $url
-     * @param mixed $body
-     * @param array $headers
-     * @return Response|ResponseInterface
+     * @param mixed  $body
+     * @param array  $headers
+     *
      * @throws ClientException
+     *
+     * @return Response|ResponseInterface
      */
-    public function post($url, $body, array $headers = []) {
-
-        if ($body && is_string($body)) {
+    public function post($url, $body, array $headers = [])
+    {
+        if ($body && \is_string($body)) {
             // TODO: Check - i think we dont need CustomRequest
             //$this->setOption(CURLOPT_CUSTOMREQUEST, "POST");
             $this->setOption(CURLOPT_POSTFIELDS, $body);
-        } elseif ($body && is_array($body)) {
+        } elseif ($body && \is_array($body)) {
             $this->setOption(CURLOPT_POST, 1);
             $this->setOption(CURLOPT_POSTFIELDS, http_build_query($body));
         } else {
@@ -164,9 +168,9 @@ class CurlClient implements ClientInterface
      */
     public function authorize($token)
     {
-        $this->additionalHeaders = array(
-            'Authorization:Bearer' => $token
-        );
+        $this->additionalHeaders = [
+            'Authorization:Bearer' => $token,
+        ];
 
         return $this;
     }
@@ -174,21 +178,24 @@ class CurlClient implements ClientInterface
     /**
      * @return int
      */
-    private function getResponseCode() {
-        return (int)curl_getinfo($this->handle, CURLINFO_HTTP_CODE);
+    private function getResponseCode()
+    {
+        return (int) curl_getinfo($this->handle, CURLINFO_HTTP_CODE);
     }
 
     /**
      * @return int
      */
-    private function getErrno() {
+    private function getErrno()
+    {
         return curl_errno($this->handle);
     }
 
     /**
      * @return string
      */
-    private function getError() {
+    private function getError()
+    {
         return curl_error($this->handle);
     }
 
@@ -198,8 +205,9 @@ class CurlClient implements ClientInterface
      *
      * @return array
      */
-    private function mergeHeaders($headers1, $headers2) {
-        $ret = array();
+    private function mergeHeaders($headers1, $headers2)
+    {
+        $ret = [];
         foreach ($headers1 as $k => $v) {
             if (is_numeric($k)) {
                 $name = substr($v, 0, strpos($v, ':'));
@@ -218,6 +226,7 @@ class CurlClient implements ClientInterface
                 $ret[$k] = $v;
             }
         }
+
         return $ret;
     }
 }

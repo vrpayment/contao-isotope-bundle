@@ -1,28 +1,27 @@
 <?php
-/**
- * contao-isotope-bundle for Contao Open Source CMS
+
+/*
+ * VR Payment GmbH Contao Isotope Bundle
  *
- * Copyright (C) 2019 47GradNord - Agentur für Internetlösungen
+ * @copyright  Copyright (c) 2019-2019, VR Payment GmbH
+ * @author     VR Payment GmbH <info@vr-payment.de>
  *
- * @license    commercial
- * @author     Holger Neuner
+ * @license LGPL-3.0-or-later
  */
 
-
 namespace Vrpayment\ContaoIsotopeBundle\Http;
-
 
 class CurlExec
 {
     /**
      * @var string
      */
-    private $headerString = "";
+    private $headerString = '';
 
     /**
      * @var array
      */
-    private $headers = array();
+    private $headers = [];
 
     /**
      * @var string
@@ -32,9 +31,10 @@ class CurlExec
     /**
      * @param resource $handle
      */
-    public function __construct($handle) {
+    public function __construct($handle)
+    {
         $this->handle = $handle;
-        curl_setopt($this->handle, CURLOPT_HEADERFUNCTION, array($this, 'readHeaders'));
+        curl_setopt($this->handle, CURLOPT_HEADERFUNCTION, [$this, 'readHeaders']);
         $this->reset();
     }
 
@@ -43,25 +43,16 @@ class CurlExec
      *
      * @return CurlExec
      */
-    public static function getInstance($handle) {
+    public static function getInstance($handle)
+    {
         return new self($handle);
-    }
-
-    /**
-     * @param resource $curl
-     * @param string   $headerLine
-     *
-     * @return int
-     */
-    private function readHeaders($curl, $headerLine) {
-        $this->headerString .= $headerLine;
-        return strlen($headerLine);
     }
 
     /**
      * @return $this
      */
-    public function exec() {
+    public function exec()
+    {
         $this->reset();
 
         $this->body = curl_exec($this->handle);
@@ -71,17 +62,45 @@ class CurlExec
     }
 
     /**
+     * @return mixed
+     */
+    public function getBody()
+    {
+        return $this->body;
+    }
+
+    /**
+     * @return array
+     */
+    public function getHeaders()
+    {
+        return $this->headers;
+    }
+
+    /**
+     * @param resource $curl
+     * @param string   $headerLine
+     *
+     * @return int
+     */
+    private function readHeaders($curl, $headerLine)
+    {
+        $this->headerString .= $headerLine;
+
+        return \strlen($headerLine);
+    }
+
+    /**
      * @param string $headerMessage
      *
      * @return array
      */
-    private function parseHeaderMessage($headerMessage) {
-
-        $headers = array();
+    private function parseHeaderMessage($headerMessage)
+    {
+        $headers = [];
 
         $lines = preg_split('/(\\r?\\n)/', $headerMessage, -1, PREG_SPLIT_DELIM_CAPTURE);
         foreach ($lines as $line) {
-
             // Parse message headers
             if (strpos($line, ':')) {
                 $parts = explode(':', $line, 2);
@@ -89,40 +108,24 @@ class CurlExec
                 $value = isset($parts[1]) ? trim($parts[1]) : '';
                 if (!isset($headers[$key])) {
                     $headers[$key] = $value;
-                } elseif (!is_array($headers[$key])) {
+                } elseif (!\is_array($headers[$key])) {
                     $headers[$key] = [$headers[$key], $value];
                 } else {
                     $headers[$key][] = $value;
                 }
             }
-
         }
 
         return $headers;
     }
 
     /**
-     * set default values
+     * set default values.
      */
-    private function reset() {
-        $this->headerString = "";
-        $this->headers = array();
+    private function reset()
+    {
+        $this->headerString = '';
+        $this->headers = [];
         $this->body = null;
     }
-
-    /**
-     * @return mixed
-     */
-    public function getBody() {
-        return $this->body;
-    }
-
-    /**
-     * @return array
-     */
-    public function getHeaders() {
-        return $this->headers;
-    }
-
-
 }

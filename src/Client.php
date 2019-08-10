@@ -1,19 +1,17 @@
 <?php
-/**
- * contao-isotope-bundle for Contao Open Source CMS
- *
- * Copyright (C) 2019 47GradNord - Agentur für Internetlösungen
- *
- * @license    commercial
- * @author     Holger Neuner
- */
 
+/*
+ * VR Payment GmbH Contao Isotope Bundle
+ *
+ * @copyright  Copyright (c) 2019-2019, VR Payment GmbH
+ * @author     VR Payment GmbH <info@vr-payment.de>
+ *
+ * @license LGPL-3.0-or-later
+ */
 
 namespace Vrpayment\ContaoIsotopeBundle;
 
-
 use Psr\Log\LoggerInterface;
-use Vrpayment\ContaoIsotopeBundle\Brand\BrandInterface;
 use Vrpayment\ContaoIsotopeBundle\Http\CurlClient;
 use Vrpayment\ContaoIsotopeBundle\Http\Exception\ClientException;
 use Vrpayment\ContaoIsotopeBundle\Http\Response;
@@ -48,7 +46,9 @@ class Client
 
     /**
      * Client constructor.
+     *
      * @param $token
+     * @param mixed $testMode
      */
     public function __construct($token, $testMode = false)
     {
@@ -59,13 +59,14 @@ class Client
     /**
      * @param $paymentType
      * @param $body
-     * @return Response|ResponseInterface
+     *
      * @throws ClientException
+     *
+     * @return Response|ResponseInterface
      */
     public function send($paymentType, $body)
     {
-        switch ($paymentType){
-
+        switch ($paymentType) {
             case 'PA':
                 return $this->sendPreAuthorization($body);
 
@@ -77,37 +78,6 @@ class Client
             default:
                 return $this->sendDebitPrepareCheckout($body);
         }
-
-    }
-
-    /**
-     * @param string $data
-     * @return Http\Response|Http\ResponseInterface
-     * @throws Http\Exception\ClientException
-     */
-    protected function sendPreAuthorization($body)
-    {
-        $curl = new CurlClient();
-        $response = $curl
-            ->authorize($this->getToken())
-            ->post($this->getDefaultUrl().self::PAYMENTS_ROUTE, $body);
-
-        return $response;
-    }
-
-    /**
-     * @param string $data
-     * @return Http\Response|Http\ResponseInterface
-     * @throws Http\Exception\ClientException
-     */
-    protected function sendDebitPrepareCheckout($body)
-    {
-        $curl = new CurlClient();
-        $response = $curl
-            ->authorize($this->getToken())
-            ->post($this->getDefaultUrl().self::PREPARECHECKOUT_ROUTE, $body);
-
-        return $response;
     }
 
     /**
@@ -120,11 +90,13 @@ class Client
 
     /**
      * @param string $token
+     *
      * @return Client
      */
-    public function setToken(string $token): Client
+    public function setToken(string $token): self
     {
         $this->token = $token;
+
         return $this;
     }
 
@@ -141,9 +113,10 @@ class Client
      *
      * @return Client
      */
-    public function setDefaultUrl($testmode): Client
+    public function setDefaultUrl($testmode): self
     {
         $this->defaultUrl = ($testmode) ? self::TEST_VRPAYMENT_URL : self::DEFAULT_VRPAYMENT_URL;
+
         return $this;
     }
 
@@ -153,5 +126,41 @@ class Client
     public function getUrlPaymentWidgetJs(): string
     {
         return $this->urlPaymentWidgetJs;
+    }
+
+    /**
+     * @param string $data
+     * @param mixed  $body
+     *
+     * @throws Http\Exception\ClientException
+     *
+     * @return Http\Response|Http\ResponseInterface
+     */
+    protected function sendPreAuthorization($body)
+    {
+        $curl = new CurlClient();
+        $response = $curl
+            ->authorize($this->getToken())
+            ->post($this->getDefaultUrl().self::PAYMENTS_ROUTE, $body);
+
+        return $response;
+    }
+
+    /**
+     * @param string $data
+     * @param mixed  $body
+     *
+     * @throws Http\Exception\ClientException
+     *
+     * @return Http\Response|Http\ResponseInterface
+     */
+    protected function sendDebitPrepareCheckout($body)
+    {
+        $curl = new CurlClient();
+        $response = $curl
+            ->authorize($this->getToken())
+            ->post($this->getDefaultUrl().self::PREPARECHECKOUT_ROUTE, $body);
+
+        return $response;
     }
 }

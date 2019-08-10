@@ -12,23 +12,16 @@
 namespace Vrpayment\ContaoIsotopeBundle\Contao\Model;
 
 use Contao\FrontendTemplate;
-use Contao\StringUtil;
-use Contao\System;
 use GuzzleHttp\Client;
-use GuzzleHttp\Psr7\Request;
-use Isotope\Interfaces\IsotopeOrderableCollection;
 use Isotope\Interfaces\IsotopePayment;
 use Isotope\Interfaces\IsotopeProductCollection;
 use Isotope\Interfaces\IsotopePurchasableCollection;
 use Isotope\Isotope;
 use Isotope\Model\Payment;
-use Isotope\Model\ProductCollection\Order;
 use Isotope\Template;
 use Vrpayment\ContaoIsotopeBundle\Brand\BrandFactory;
 use Vrpayment\ContaoIsotopeBundle\Brand\BrandInterface;
 use Vrpayment\ContaoIsotopeBundle\Http\ResponseInterface;
-use Vrpayment\ContaoIsotopeBundle\Payment\PaymentDataEnterpay;
-use Vrpayment\ContaoIsotopeBundle\Payment\PaymentDataFactory;
 
 class VrPayment extends Payment implements IsotopePayment
 {

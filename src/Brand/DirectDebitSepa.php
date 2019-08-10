@@ -1,16 +1,15 @@
 <?php
-/**
- * contao-isotope-bundle for Contao Open Source CMS
+
+/*
+ * VR Payment GmbH Contao Isotope Bundle
  *
- * Copyright (C) 2019 47GradNord - Agentur für Internetlösungen
+ * @copyright  Copyright (c) 2019-2019, VR Payment GmbH
+ * @author     VR Payment GmbH <info@vr-payment.de>
  *
- * @license    commercial
- * @author     Holger Neuner
+ * @license LGPL-3.0-or-later
  */
 
-
 namespace Vrpayment\ContaoIsotopeBundle\Brand;
-
 
 use Contao\Environment;
 use Contao\FrontendTemplate;
@@ -22,16 +21,17 @@ class DirectDebitSepa extends AbstractBrand implements BrandInterface
 {
     public function getPaymentData()
     {
-        $data = "entityId=".$this->getEntityId() .
-            "&amount=" .$this->getAmount() .
-            "&currency=" . $this->getCurrency() .
-            "&paymentType=" . $this->getPaymentType();
+        $data = 'entityId='.$this->getEntityId().
+            '&amount='.$this->getAmount().
+            '&currency='.$this->getCurrency().
+            '&paymentType='.$this->getPaymentType();
 
         return $data;
     }
 
     /**
      * @param IsotopeOrderableCollection $orderableCollection
+     *
      * @return BrandInterface
      */
     public function setIsotopeOrderableProductCollection(IsotopeOrderableCollection $orderableCollection)
@@ -51,7 +51,8 @@ class DirectDebitSepa extends AbstractBrand implements BrandInterface
 
     /**
      * @param ResponseInterface $response
-     * @param string $defaultUrl
+     * @param string            $defaultUrl
+     *
      * @return string
      */
     public function getPaymentForm(ResponseInterface $response, $defaultUrl)

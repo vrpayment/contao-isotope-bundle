@@ -1,17 +1,16 @@
 <?php
-/**
- * contao-isotope-bundle for Contao Open Source CMS
- *
- * Copyright (C) 2019 47GradNord - Agentur für Internetlösungen
- *
- * @license    commercial
- * @author     Holger Neuner
- */
 
+/*
+ * VR Payment GmbH Contao Isotope Bundle
+ *
+ * @copyright  Copyright (c) 2019-2019, VR Payment GmbH
+ * @author     VR Payment GmbH <info@vr-payment.de>
+ *
+ * @license LGPL-3.0-or-later
+ */
 
 namespace Vrpayment\ContaoIsotopeBundle\Http\Exception;
 
-
-class ClientException extends \Exception {
-
+class ClientException extends \Exception
+{
 }
