@@ -11,6 +11,8 @@
 
 namespace Vrpayment\ContaoIsotopeBundle\Brand;
 
+use Contao\Environment;
+use Contao\PageModel;
 use Isotope\Interfaces\IsotopeOrderableCollection;
 use Isotope\Model\ProductCollectionItem;
 use Isotope\Model\TaxRate;
@@ -76,7 +78,12 @@ abstract class AbstractBrand implements BrandInterface
         return $this->order->getShippingAddress();
     }
 
-    protected function getCartItems()
+    protected function getShooperResultUrl()
+    {
+        return Environment::get('url').'/'.PageModel::findOneBy('id',$this->order->getPaymentMethod()->vrpayment_shopperResultUrl)->getFrontendUrl();
+    }
+
+    protected function getCartItems($addShipping = false)
     {
         $cartItems = '';
 
@@ -94,6 +101,17 @@ abstract class AbstractBrand implements BrandInterface
 
             ++$count;
         }
+
+        if(!$addShipping)
+        {
+            return $cartItems;
+        }
+
+        $cartItems .= '&cart.items['.$count.'].name='.$this->order->getShippingSurcharge()->label.
+            '&cart.items['.$count.'].merchantItemId=S'.$this->order->getShippingSurcharge()->source_id.
+            '&cart.items['.$count.'].price='.number_format($this->order->getShippingSurcharge()->total_price, 2).
+            '&cart.items['.$count.'].quantity=1&cart.items['.$count.'].totalAmount='.number_format($this->order->getShippingSurcharge()->total_price, 2).
+            '&cart.items['.$count.'].tax=0&cart.items['.$count.'].totalTaxAmount=0';
 
         return $cartItems;
     }

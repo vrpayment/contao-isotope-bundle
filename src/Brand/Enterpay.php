@@ -27,11 +27,11 @@ class Enterpay extends AbstractBrand
             '&paymentType='.$this->getPaymentType().
             '&billing.city='.$this->getBillingAddress()->city.
             '&billing.postcode='.$this->getBillingAddress()->postal.
-            '&billing.street1='.$this->getBillingAddress()->street_1.$this->getCartItems().
+            '&billing.street1='.$this->getBillingAddress()->street_1.$this->getCartItems(true).
             '&shipping.city='.$this->getShippingAddress()->city.
             '&shipping.postcode='.$this->getShippingAddress()->postal.
             '&shipping.street1='.$this->getShippingAddress()->street_1.
-            '&shopperResultUrl=https://www.google.de';
+            '&shopperResultUrl='.$this->getShooperResultUrl();
 
         return $data;
     }
