@@ -17,6 +17,7 @@ use Isotope\Interfaces\IsotopeOrderableCollection;
 use Psr\Log\LoggerInterface;
 use Vrpayment\ContaoIsotopeBundle\Brand\BrandFactory;
 use Vrpayment\ContaoIsotopeBundle\Brand\BrandInterface;
+use Vrpayment\ContaoIsotopeBundle\Entity\PaymentStatus;
 use Vrpayment\ContaoIsotopeBundle\Entity\PreAuthorization;
 use Vrpayment\ContaoIsotopeBundle\Entity\PreCheckout;
 use Vrpayment\ContaoIsotopeBundle\Http\Response;
@@ -186,5 +187,14 @@ class VrPaymentManager
         }
 
         return PreAuthorization::buildFromResultArray($this->getClient()->send($this->getOrder()->getPaymentType(), $this->getBrand()->getPaymentData($this->getOrder()))->json());
+    }
+
+    /**
+     * @return bool|PaymentStatus
+     * @throws Http\Exception\ResponseException
+     */
+    public function getPaymentStatus($ressourcePath)
+    {
+        return PaymentStatus::buildFromResultArray($this->getClient()->getPaymentStatus($ressourcePath, $this->getOrder()->getPaymentEntityId())->json());
     }
 }

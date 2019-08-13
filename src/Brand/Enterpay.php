@@ -57,8 +57,8 @@ class Enterpay extends AbstractBrand
         return '';
     }
 
-    public function getPreAuthorization(PreAuthorization $preAuthorization)
+    public function proceedPreAuthorization()
     {
-        return $preAuthorization;
+        return true;
     }
 }

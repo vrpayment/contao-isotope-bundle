@@ -60,8 +60,8 @@ class DirectDebitSepa extends AbstractBrand implements BrandInterface
         return $template->parse();
     }
 
-    public function getPreAuthorization()
+    public function proceedPreAuthorization()
     {
-        return null;
+        return false;
     }
 }

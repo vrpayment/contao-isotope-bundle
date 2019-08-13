@@ -24,6 +24,7 @@ use Isotope\Template;
 use Vrpayment\ContaoIsotopeBundle\Brand\BrandFactory;
 use Vrpayment\ContaoIsotopeBundle\Brand\BrandInterface;
 use Vrpayment\ContaoIsotopeBundle\Client;
+use Vrpayment\ContaoIsotopeBundle\Entity\PaymentStatus;
 use Vrpayment\ContaoIsotopeBundle\Entity\PreAuthorization;
 use Vrpayment\ContaoIsotopeBundle\Http\ResponseInterface;
 use Vrpayment\ContaoIsotopeBundle\ResultCodeHandler;
@@ -64,16 +65,40 @@ class VrPayment extends Payment implements IsotopePayment
             ->setBrand()
             ->setClient();
 
+        // Handle Request come back with Ressource Path
+        if(null !== $this->ressourcePath)
+        {
+            /** @var PaymentStatus $paymentStatus */
+            $paymentStatus = $vrPaymentManager->getPaymentStatus($this->ressourcePath);
+
+            if(!$paymentStatus->isHasError())
+            {
+                $objOrder->checkout();
+                $objOrder->updateOrderStatus($this->new_order_status);
+
+                // Redirect to Checkout
+                $strUrl = Checkout::generateUrlForStep('complete', $objOrder);
+                Controller::redirect($strUrl, 301);
+            }
+
+            $objTemplate->error = 'Fehlercode: '.$paymentStatus->getResultCode().', Description:'.$paymentStatus->getResultDescription();
+            return $objTemplate->parse();
+
+
+
+
+        }
+
         if($vrPaymentManager->getBrand()->showPaymentForm())
         {
             $objTemplate->paymentForm = $vrPaymentManager->getBrand()->getPaymentForm($vrPaymentManager->getPrecheckout());
             return $objTemplate->parse();
         }
 
-        if(!$vrPaymentManager->getBrand()->showPaymentForm())
+        if($vrPaymentManager->getBrand()->proceedPreAuthorization())
         {
             /** @var PreAuthorization $preAuthorization */
-            $preAuthorization = $vrPaymentManager->getBrand()->getPreAuthorization($vrPaymentManager->getPreAuthorization());
+            $preAuthorization = $vrPaymentManager->getPreAuthorization();
 
             if($preAuthorization->isHasError())
             {

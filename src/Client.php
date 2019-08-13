@@ -142,18 +142,18 @@ class Client
         }
     }
 
+
     /**
-     * @param IsotopeOrderableCollection $orderableCollection
-     * @param string                     $ressourcePath
-     *
+     * @param $ressourcePath
+     * @param $entityId
      * @return Response|ResponseInterface
      */
-    public function getPaymentStatus(IsotopeOrderableCollection $orderableCollection, $ressourcePath)
+    public function getPaymentStatus($ressourcePath, $entityId)
     {
         $curl = new CurlClient();
         $response = $curl
             ->authorize($this->getToken())
-            ->get($this->getDefaultUrl().$ressourcePath.'?entityId='.$orderableCollection->getPaymentMethod()->vrpayment_entityid);
+            ->get($this->getDefaultUrl().$ressourcePath.'?entityId='.$entityId);
 
         return $response;
     }

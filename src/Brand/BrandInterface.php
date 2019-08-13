@@ -12,6 +12,7 @@
 namespace Vrpayment\ContaoIsotopeBundle\Brand;
 
 use Isotope\Interfaces\IsotopeOrderableCollection;
+use Vrpayment\ContaoIsotopeBundle\Entity\PaymentStatus;
 use Vrpayment\ContaoIsotopeBundle\Entity\PreAuthorization;
 use Vrpayment\ContaoIsotopeBundle\Entity\PreCheckout;
 use Vrpayment\ContaoIsotopeBundle\Http\ResponseInterface;
@@ -33,5 +34,9 @@ interface BrandInterface
     /** string */
     public function getPaymentForm(PreCheckout $preCheckout);
 
-    public function getPreAuthorization(PreAuthorization $preAuthorization);
+    /**
+     * @return bool
+     */
+    public function proceedPreAuthorization();
+
 }
