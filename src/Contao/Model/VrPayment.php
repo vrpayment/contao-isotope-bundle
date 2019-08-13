@@ -78,12 +78,14 @@ class VrPayment extends Payment implements IsotopePayment
             return $objTemplate->parse();
         }
 
+        // Handle if PaymentBrand has to show a PaymentForm
         if ($vrPaymentManager->getBrand()->showPaymentForm()) {
             $objTemplate->paymentForm = $vrPaymentManager->getBrand()->getPaymentForm($vrPaymentManager->getPrecheckout());
 
             return $objTemplate->parse();
         }
 
+        // Handle if PaymentBrand has to proceed any Pre Authorization
         if ($vrPaymentManager->getBrand()->proceedPreAuthorization()) {
             /** @var PreAuthorization $preAuthorization */
             $preAuthorization = $vrPaymentManager->getPreAuthorization();
