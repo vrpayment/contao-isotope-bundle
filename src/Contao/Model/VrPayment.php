@@ -61,7 +61,7 @@ class VrPayment extends Payment implements IsotopePayment
 
         // Handle Request come back with Ressource Path
         if (null !== $this->ressourcePath) {
-            /** @var PaymentStatus $paymentStatus */
+
             $paymentStatus = $vrPaymentManager->getPaymentStatus($this->ressourcePath);
 
             if (!$paymentStatus->isHasError()) {

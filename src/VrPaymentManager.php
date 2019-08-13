@@ -191,8 +191,6 @@ class VrPaymentManager
     /**
      * @param mixed $ressourcePath
      *
-     * @throws Http\Exception\ResponseException
-     *
      * @return bool|PaymentStatus
      */
     public function getPaymentStatus($ressourcePath)
