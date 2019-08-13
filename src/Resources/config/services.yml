@@ -8,6 +8,13 @@ services:
             calls:
                 - ["setContainer", ["@service_container"]]
 
+    Vrpayment\ContaoIsotopeBundle\VrPaymentManager:
+        class: Vrpayment\ContaoIsotopeBundle\VrPaymentManager
+        public: true
+        arguments:
+            - "@doctrine.dbal.default_connection"
+
+    # We dont know if we want to use this
     Vrpayment\ContaoIsotopeBundle\ResultCodeHandler:
         class: Vrpayment\ContaoIsotopeBundle\ResultCodeHandler
         public: true

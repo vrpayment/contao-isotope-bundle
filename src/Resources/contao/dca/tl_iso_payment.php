@@ -8,7 +8,7 @@
  * @author     Holger Neuner
  */
 
-$GLOBALS['TL_DCA']['tl_iso_payment']['palettes']['vrpayment'] = '{type_legend},name,label,type;{note_legend:hide},note;{config_legend},new_order_status,quantity_mode,minimum_quantity,maximum_quantity,minimum_total,maximum_total,countries,shipping_modules,product_types,product_types_condition,config_ids;{gateway_legend},vrpayment_token, vrpayment_entityid, vrpayment_brand,vrpayment_type,vrpayment_brandlogo;{vrpayment_config_legend},vrpayment_shopperResultUrl;{price_legend:hide},price,tax_class;{enabled_legend},enabled,debug,logging';
+$GLOBALS['TL_DCA']['tl_iso_payment']['palettes']['vrpayment'] = '{type_legend},name,label,type;{note_legend:hide},note;{config_legend},new_order_status,quantity_mode,minimum_quantity,maximum_quantity,minimum_total,maximum_total,countries,shipping_modules,product_types,product_types_condition,config_ids;{gateway_legend},vrpayment_token, vrpayment_entityid, vrpayment_brand,vrpayment_type,vrpayment_brandlogo;{vrpayment_config_legend},vrpayment_merchantId,vrpayment_shopperResultUrl;{price_legend:hide},price,tax_class;{enabled_legend},enabled,debug,logging';
 
 // Additional Fields
 $GLOBALS['TL_DCA']['tl_iso_payment']['fields']['vrpayment_token'] = array
@@ -62,6 +62,14 @@ $GLOBALS['TL_DCA']['tl_iso_payment']['fields']['vrpayment_shopperResultUrl'] = a
     'explanation'               => 'jumpTo',
     'sql'                       => "int(10) unsigned NOT NULL default '0'",
     'relation'                  => array('type'=>'hasOne', 'load'=>'lazy'),
+);
+
+$GLOBALS['TL_DCA']['tl_iso_payment']['fields']['vrpayment_merchantId'] = array
+(
+    'label'                 => &$GLOBALS['TL_LANG']['tl_iso_payment']['vrpayment_merchantId'],
+    'inputType'             => 'text',
+    'eval'                  => array('mandatory'=>false, 'decodeEntities'=>true, 'tl_class'=>'w50'),
+    'sql'                   => "varchar(255) NOT NULL default ''",
 );
 
 

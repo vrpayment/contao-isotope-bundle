@@ -15,6 +15,7 @@ use Symfony\Component\Config\FileLocator;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\YamlFileLoader;
+use Symfony\Component\DependencyInjection\Reference;
 
 class ContaoIsotopeExtension extends Extension
 {
@@ -35,6 +36,15 @@ class ContaoIsotopeExtension extends Extension
 
         foreach ($files as $file) {
             $loader->load($file);
+        }
+
+        // Adjust VrPaymentManager to use logger if is defined
+        $paymentManagerDefinition = $container->getDefinition('Vrpayment\ContaoIsotopeBundle\VrPaymentManager')->setMethodCalls();
+
+        foreach ($mergedConfig as $config) {
+            if ($config['logger']) {
+                $paymentManagerDefinition->addMethodCall('setLogger', [new Reference($config['logger'])]);
+            }
         }
     }
 }

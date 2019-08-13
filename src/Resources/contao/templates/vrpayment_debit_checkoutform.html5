@@ -1,6 +1,3 @@
-<?php if($this->checkoutID): ?>
-    <script src="<?= $this->defaultUrl; ?>?checkoutId=<?= $this->checkoutID; ?>"></script>
-    <form action="<?= $this->shopperResultUrl; ?>" class="paymentWidgets" data-brands="<?= $this->brand; ?>"></form>
-<?php else: ?>
+<script src="<?= $this->uriWidgetJs; ?>"></script>
+<form action="<?= $this->shopperResultUrl; ?>" class="paymentWidgets" data-brands="<?= $this->brand; ?>"></form>
 
-<?php endif; ?>

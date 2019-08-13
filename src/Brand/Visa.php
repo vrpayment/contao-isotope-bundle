@@ -14,36 +14,30 @@ namespace Vrpayment\ContaoIsotopeBundle\Brand;
 use Contao\Environment;
 use Contao\FrontendTemplate;
 use Isotope\Interfaces\IsotopeOrderableCollection;
+use Vrpayment\ContaoIsotopeBundle\Entity\PreCheckout;
 use Vrpayment\ContaoIsotopeBundle\Http\ResponseInterface;
+use Vrpayment\ContaoIsotopeBundle\Order;
 
 class Visa extends AbstractBrand implements BrandInterface
 {
-    public function getPaymentData()
+    /**
+     * @param Order $order
+     * @return string
+     */
+    public function getPaymentData(Order $order)
     {
-        $data = 'entityId='.$this->getEntityId().
-            '&amount='.$this->getAmount().
-            '&currency='.$this->getCurrency().
-            '&paymentType='.$this->getPaymentType();
+        $data = 'entityId='.$order->getPaymentEntityId().
+            '&amount='.$order->getOrderAmount().
+            '&currency='.$order->getOrderCurrency().
+            '&paymentType='.$order->getPaymentType();
 
         return $data;
     }
 
     /**
-     * @param IsotopeOrderableCollection $orderableCollection
-     *
-     * @return BrandInterface
-     */
-    public function setIsotopeOrderableProductCollection(IsotopeOrderableCollection $orderableCollection)
-    {
-        $this->order = $orderableCollection;
-
-        return $this;
-    }
-
-    /**
      * @return bool
      */
-    public function hasPaymentForm()
+    public function showPaymentForm()
     {
         return true;
     }
@@ -54,14 +48,18 @@ class Visa extends AbstractBrand implements BrandInterface
      *
      * @return string
      */
-    public function getPaymentForm(ResponseInterface $response, $defaultUrl)
+    public function getPaymentForm(PreCheckout $preCheckout)
     {
         $template = new FrontendTemplate('vrpayment_debit_checkoutform');
-        $template->shopperResultUrl = Environment::get('uri');
-        $template->brand = $this->order->getPaymentMethod()->vrpayment_brand;
-        $template->defaultUrl = $defaultUrl;
-        $template->checkoutID = $this->getPaymentFormCheckoutId($response->json());
+        $template->shopperResultUrl = $preCheckout->getShopperResultUrl();
+        $template->brand = $preCheckout->getBrand();
+        $template->uriWidgetJs = $preCheckout->getUriWidget();
 
         return $template->parse();
+    }
+
+    public function getPreAuthorization()
+    {
+        return null;
     }
 }

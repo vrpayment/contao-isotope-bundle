@@ -20,18 +20,6 @@ use Vrpayment\ContaoIsotopeBundle\Http\ResponseInterface;
 
 class Client
 {
-    const DEFAULT_VRPAYMENT_URL = 'https://vr-pay-ecommerce.de';
-
-    const TEST_VRPAYMENT_URL = 'https://test.vr-pay-ecommerce.de';
-
-    const PAYMENTS_ROUTE = '/v1/payments';
-
-    const REGISTRATIONS_ROUTE = '/v1/registrations';
-
-    const PREPARECHECKOUT_ROUTE = '/v1/checkouts';
-
-    const WIDGET_JS_ROUTE = '/v1/paymentWidgets.js';
-
     /**
      * @var string
      */
@@ -47,16 +35,87 @@ class Client
      */
     protected $defaultUrl;
 
+    /** @var string */
+    protected $routePayments;
+
+    /** @var string */
+    protected $routeRegistrations;
+
+    /** @var string */
+    protected $routePreCheckout;
+
     /**
      * Client constructor.
      *
      * @param $token
      * @param mixed $testMode
      */
-    public function __construct($token, $testMode = false)
+    public function __construct($token, $routingOptions)
     {
         $this->token = $token;
-        $this->setDefaultUrl($testMode);
+        $this->setRouting($routingOptions);
+    }
+
+    public function setRouting(array $options)
+    {
+        $this->setDefaultUrl($options['defaultUrl']);
+        $this->setRoutePayments($options['routePayments']);
+        $this->setRouteRegistrations($options['routeRegistrations']);
+        $this->setRoutePreCheckout($options['routePreCheckout']);
+    }
+
+    /**
+     * @return string
+     */
+    public function getRoutePayments(): string
+    {
+        return $this->routePayments;
+    }
+
+    /**
+     * @param string $routePayments
+     * @return Client
+     */
+    public function setRoutePayments(string $routePayments): Client
+    {
+        $this->routePayments = $routePayments;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRouteRegistrations(): string
+    {
+        return $this->routeRegistrations;
+    }
+
+    /**
+     * @param string $routeRegistrations
+     * @return Client
+     */
+    public function setRouteRegistrations(string $routeRegistrations): Client
+    {
+        $this->routeRegistrations = $routeRegistrations;
+        return $this;
+    }
+
+    /**
+     * @return string
+     */
+    public function getRoutePreCheckout(): string
+    {
+        return $this->routePreCheckout;
+    }
+
+    /**
+     * @param string $routePreCheckout
+     * @return Client
+     */
+    public function setRoutePreCheckout(string $routePreCheckout): Client
+    {
+        $this->routePreCheckout = $routePreCheckout;
+        return $this;
     }
 
     /**
@@ -128,23 +187,13 @@ class Client
     }
 
     /**
-     * @param bool $testmode
-     *
+     * @param string $defaultUrl
      * @return Client
      */
-    public function setDefaultUrl($testmode): self
+    public function setDefaultUrl(string $defaultUrl): Client
     {
-        $this->defaultUrl = ($testmode) ? self::TEST_VRPAYMENT_URL : self::DEFAULT_VRPAYMENT_URL;
-
+        $this->defaultUrl = $defaultUrl;
         return $this;
-    }
-
-    /**
-     * @return string
-     */
-    public function getUrlWidgetJs()
-    {
-        return $this->getDefaultUrl().self::WIDGET_JS_ROUTE;
     }
 
     /**
@@ -160,7 +209,7 @@ class Client
         $curl = new CurlClient();
         $response = $curl
             ->authorize($this->getToken())
-            ->post($this->getDefaultUrl().self::PAYMENTS_ROUTE, $body);
+            ->post($this->getDefaultUrl().$this->getRoutePayments(), $body);
 
         return $response;
     }
@@ -178,7 +227,7 @@ class Client
         $curl = new CurlClient();
         $response = $curl
             ->authorize($this->getToken())
-            ->post($this->getDefaultUrl().self::PREPARECHECKOUT_ROUTE, $body);
+            ->post($this->getDefaultUrl().$this->getRoutePreCheckout(), $body);
 
         return $response;
     }

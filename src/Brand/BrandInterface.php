@@ -12,32 +12,26 @@
 namespace Vrpayment\ContaoIsotopeBundle\Brand;
 
 use Isotope\Interfaces\IsotopeOrderableCollection;
+use Vrpayment\ContaoIsotopeBundle\Entity\PreAuthorization;
+use Vrpayment\ContaoIsotopeBundle\Entity\PreCheckout;
 use Vrpayment\ContaoIsotopeBundle\Http\ResponseInterface;
+use Vrpayment\ContaoIsotopeBundle\Order;
 
 interface BrandInterface
 {
     /**
+     * @param Order $order
      * @return string
      */
-    public function getPaymentData();
-
-    /**
-     * @param IsotopeOrderableCollection $orderableCollection
-     *
-     * @return BrandInterface
-     */
-    public function setIsotopeOrderableProductCollection(IsotopeOrderableCollection $orderableCollection);
+    public function getPaymentData(Order $order);
 
     /**
      * @return bool
      */
-    public function hasPaymentForm();
+    public function showPaymentForm();
 
-    /**
-     * @param ResponseInterface $response
-     * @param string            $defaultUrl
-     *
-     * @return string
-     */
-    public function getPaymentForm(ResponseInterface $response, $defaultUrl);
+    /** string */
+    public function getPaymentForm(PreCheckout $preCheckout);
+
+    public function getPreAuthorization(PreAuthorization $preAuthorization);
 }

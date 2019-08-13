@@ -11,53 +11,54 @@
 
 namespace Vrpayment\ContaoIsotopeBundle\Brand;
 
+use Contao\Controller;
 use Isotope\Interfaces\IsotopeOrderableCollection;
+use Vrpayment\ContaoIsotopeBundle\Entity\PreAuthorization;
+use Vrpayment\ContaoIsotopeBundle\Entity\PreCheckout;
 use Vrpayment\ContaoIsotopeBundle\Http\ResponseInterface;
+use Vrpayment\ContaoIsotopeBundle\Order;
 use Vrpayment\ContaoIsotopeBundle\StaticHelper;
 
 class Enterpay extends AbstractBrand
 {
-    public function getPaymentData()
+    public function getPaymentData(Order $order)
     {
-        $data = 'entityId='.$this->getEntityId().
-            '&customParameters[merchantId]='.StaticHelper::getUniqueIdentifier().
-            '&amount='.$this->getAmount().
-            '&currency='.$this->getCurrency().
-            '&paymentBrand='.$this->getPaymentBrand().
-            '&paymentType='.$this->getPaymentType().
-            '&billing.city='.$this->getBillingAddress()->city.
-            '&billing.postcode='.$this->getBillingAddress()->postal.
-            '&billing.street1='.$this->getBillingAddress()->street_1.$this->getCartItems(true).
-            '&shipping.city='.$this->getShippingAddress()->city.
-            '&shipping.postcode='.$this->getShippingAddress()->postal.
-            '&shipping.street1='.$this->getShippingAddress()->street_1.
-            '&shopperResultUrl='.$this->getShooperResultUrl();
+        $data = 'entityId='.$order->getPaymentEntityId().
+            '&customParameters[merchantId]='.$order->getPaymentMerchantId().
+            '&amount='.$order->getOrderAmount().
+            '&currency='.$order->getOrderCurrency().
+            '&paymentBrand='.$order->getPaymentBrand().
+            '&paymentType='.$order->getPaymentType().
+            '&customer.givenName='.$order->getOrderBillingAddress()->firstname.
+            '&customer.surname='.$order->getOrderBillingAddress()->lastname.
+            '&customer.email='.$order->getOrderBillingAddress()->email.
+            '&customer.companyName='.$order->getOrderBillingAddress()->company.
+            '&billing.city='.$order->getOrderBillingAddress()->city.
+            '&billing.postcode='.$order->getOrderBillingAddress()->postal.
+            '&billing.street1='.$order->getOrderBillingAddress()->street_1.$order->getOrderCartItems(true).
+            '&shipping.city='.$order->getOrderShippingAddress()->city.
+            '&shipping.postcode='.$order->getOrderShippingAddress()->postal.
+            '&shipping.street1='.$order->getOrderShippingAddress()->street_1.
+            '&shopperResultUrl='.$order->getPaymentShopperResultUrl();
 
         return $data;
     }
 
     /**
-     * @param IsotopeOrderableCollection $orderableCollection
-     *
-     * @return BrandInterface
-     */
-    public function setIsotopeOrderableProductCollection(IsotopeOrderableCollection $orderableCollection)
-    {
-        $this->order = $orderableCollection;
-
-        return $this;
-    }
-
-    /**
      * @return bool
      */
-    public function hasPaymentForm()
+    public function showPaymentForm()
     {
         return false;
     }
 
-    public function getPaymentForm(ResponseInterface $response, $defaultUrl = '')
+    public function getPaymentForm(PreCheckout $preCheckout)
     {
         return '';
+    }
+
+    public function getPreAuthorization(PreAuthorization $preAuthorization)
+    {
+        return $preAuthorization;
     }
 }
