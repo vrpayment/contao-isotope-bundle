@@ -1,16 +1,15 @@
 <?php
-/**
- * contao-isotope-bundle for Contao Open Source CMS
+
+/*
+ * VR Payment GmbH Contao Isotope Bundle
  *
- * Copyright (C) 2019 47GradNord - Agentur für Internetlösungen
+ * @copyright  Copyright (c) 2019-2019, VR Payment GmbH
+ * @author     VR Payment GmbH <info@vr-payment.de>
  *
- * @license    commercial
- * @author     Holger Neuner
+ * @license LGPL-3.0-or-later
  */
 
-
 namespace Vrpayment\ContaoIsotopeBundle;
-
 
 use Doctrine\DBAL\Connection;
 use Isotope\Interfaces\IsotopeOrderableCollection;
@@ -53,6 +52,7 @@ class VrPaymentManager
 
     /**
      * VrPaymentManager constructor.
+     *
      * @param Connection $connection
      */
     public function __construct(Connection $connection)
@@ -70,6 +70,7 @@ class VrPaymentManager
 
     /**
      * @param LoggerInterface $logger
+     *
      * @return $this
      */
     public function setLogger(LoggerInterface $logger)
@@ -87,9 +88,10 @@ class VrPaymentManager
         return $this->order;
     }
 
-    public function setOrder(IsotopeOrderableCollection $order): VrPaymentManager
+    public function setOrder(IsotopeOrderableCollection $order): self
     {
         $this->order = new Order($order);
+
         return $this;
     }
 
@@ -101,9 +103,10 @@ class VrPaymentManager
         return $this->brand;
     }
 
-    public function setBrand(): VrPaymentManager
+    public function setBrand(): self
     {
         $this->brand = BrandFactory::getBrandByPaymentType($this->getOrder()->getPaymentBrand());
+
         return $this;
     }
 
@@ -115,10 +118,9 @@ class VrPaymentManager
         return $this->client;
     }
 
-    public function setClient(): VrPaymentManager
+    public function setClient(): self
     {
-        if(null === $this->getOrder())
-        {
+        if (null === $this->getOrder()) {
             return null;
         }
 
@@ -128,29 +130,28 @@ class VrPaymentManager
                 'defaultUrl' => ($this->getOrder()->getTestmode()) ? self::TEST_VRPAYMENT_URL : self::DEFAULT_VRPAYMENT_URL,
                 'routePayments' => self::PAYMENTS_ROUTE,
                 'routeRegistrations' => self::REGISTRATIONS_ROUTE,
-                'routePreCheckout' => self::PREPARECHECKOUT_ROUTE
+                'routePreCheckout' => self::PREPARECHECKOUT_ROUTE,
             ]);
 
         return $this;
     }
 
     /**
-     * @return bool|PreCheckout
      * @throws Http\Exception\ClientException
      * @throws Http\Exception\ResponseException
+     *
+     * @return bool|PreCheckout
      */
     public function getPrecheckout()
     {
-        if(!$this->getBrand()->showPaymentForm())
-        {
+        if (!$this->getBrand()->showPaymentForm()) {
             return false;
         }
 
         /** @var Response $response */
         $response = $this->getClient()->send($this->getOrder()->getPaymentType(), $this->getBrand()->getPaymentData($this->getOrder()));
 
-        if(StaticResponseResultValidator::isSuccessfullyPendingTransaction($response->json()))
-        {
+        if (StaticResponseResultValidator::isSuccessfullyPendingTransaction($response->json())) {
             // TODO Log
 
             /** @var PreCheckout $e */
@@ -160,29 +161,27 @@ class VrPaymentManager
             $preCheckout->setBrand($this->getOrder()->getPaymentBrand());
 
             return $preCheckout;
-
-        } else {
-
-            // TODO Log
-
-            /** @var PreCheckout $e */
-            $preCheckout = new PreCheckout();
-            $preCheckout->setHasError(true);
-            $preCheckout->setErrorDescription('No Checkout prepared');
-
-            return $preCheckout;
         }
+
+        // TODO Log
+
+        /** @var PreCheckout $e */
+        $preCheckout = new PreCheckout();
+        $preCheckout->setHasError(true);
+        $preCheckout->setErrorDescription('No Checkout prepared');
+
+        return $preCheckout;
     }
 
     /**
-     * @return bool|PreAuthorization
      * @throws Http\Exception\ClientException
      * @throws Http\Exception\ResponseException
+     *
+     * @return bool|PreAuthorization
      */
     public function getPreAuthorization()
     {
-        if($this->getBrand()->showPaymentForm())
-        {
+        if ($this->getBrand()->showPaymentForm()) {
             return false;
         }
 
@@ -190,8 +189,11 @@ class VrPaymentManager
     }
 
     /**
-     * @return bool|PaymentStatus
+     * @param mixed $ressourcePath
+     *
      * @throws Http\Exception\ResponseException
+     *
+     * @return bool|PaymentStatus
      */
     public function getPaymentStatus($ressourcePath)
     {

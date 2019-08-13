@@ -17,17 +17,11 @@ use Contao\System;
 use Isotope\Interfaces\IsotopePayment;
 use Isotope\Interfaces\IsotopeProductCollection;
 use Isotope\Interfaces\IsotopePurchasableCollection;
-use Isotope\Isotope;
 use Isotope\Model\Payment;
 use Isotope\Module\Checkout;
 use Isotope\Template;
-use Vrpayment\ContaoIsotopeBundle\Brand\BrandFactory;
-use Vrpayment\ContaoIsotopeBundle\Brand\BrandInterface;
-use Vrpayment\ContaoIsotopeBundle\Client;
 use Vrpayment\ContaoIsotopeBundle\Entity\PaymentStatus;
 use Vrpayment\ContaoIsotopeBundle\Entity\PreAuthorization;
-use Vrpayment\ContaoIsotopeBundle\Http\ResponseInterface;
-use Vrpayment\ContaoIsotopeBundle\ResultCodeHandler;
 use Vrpayment\ContaoIsotopeBundle\VrPaymentManager;
 
 class VrPayment extends Payment implements IsotopePayment
@@ -51,7 +45,7 @@ class VrPayment extends Payment implements IsotopePayment
     public function checkoutForm(IsotopeProductCollection $objOrder, \Module $objModule)
     {
         if (!$objOrder instanceof IsotopePurchasableCollection) {
-            \System::log('Product collection ID "' . $objOrder->getId() . '" is not purchasable', __METHOD__, TL_ERROR);
+            \System::log('Product collection ID "'.$objOrder->getId().'" is not purchasable', __METHOD__, TL_ERROR);
 
             return false;
         }
@@ -66,13 +60,11 @@ class VrPayment extends Payment implements IsotopePayment
             ->setClient();
 
         // Handle Request come back with Ressource Path
-        if(null !== $this->ressourcePath)
-        {
+        if (null !== $this->ressourcePath) {
             /** @var PaymentStatus $paymentStatus */
             $paymentStatus = $vrPaymentManager->getPaymentStatus($this->ressourcePath);
 
-            if(!$paymentStatus->isHasError())
-            {
+            if (!$paymentStatus->isHasError()) {
                 $objOrder->checkout();
                 $objOrder->updateOrderStatus($this->new_order_status);
 
@@ -82,27 +74,23 @@ class VrPayment extends Payment implements IsotopePayment
             }
 
             $objTemplate->error = 'Fehlercode: '.$paymentStatus->getResultCode().', Description:'.$paymentStatus->getResultDescription();
+
             return $objTemplate->parse();
-
-
-
-
         }
 
-        if($vrPaymentManager->getBrand()->showPaymentForm())
-        {
+        if ($vrPaymentManager->getBrand()->showPaymentForm()) {
             $objTemplate->paymentForm = $vrPaymentManager->getBrand()->getPaymentForm($vrPaymentManager->getPrecheckout());
+
             return $objTemplate->parse();
         }
 
-        if($vrPaymentManager->getBrand()->proceedPreAuthorization())
-        {
+        if ($vrPaymentManager->getBrand()->proceedPreAuthorization()) {
             /** @var PreAuthorization $preAuthorization */
             $preAuthorization = $vrPaymentManager->getPreAuthorization();
 
-            if($preAuthorization->isHasError())
-            {
+            if ($preAuthorization->isHasError()) {
                 $objTemplate->error = 'Fehlercode: '.$preAuthorization->getResultCode().', Description:'.$preAuthorization->getResultDescription();
+
                 return $objTemplate->parse();
             }
 

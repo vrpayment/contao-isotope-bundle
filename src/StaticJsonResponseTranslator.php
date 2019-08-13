@@ -1,21 +1,21 @@
 <?php
-/**
- * contao-isotope-bundle for Contao Open Source CMS
+
+/*
+ * VR Payment GmbH Contao Isotope Bundle
  *
- * Copyright (C) 2019 47GradNord - Agentur für Internetlösungen
+ * @copyright  Copyright (c) 2019-2019, VR Payment GmbH
+ * @author     VR Payment GmbH <info@vr-payment.de>
  *
- * @license    commercial
- * @author     Holger Neuner
+ * @license LGPL-3.0-or-later
  */
 
-
 namespace Vrpayment\ContaoIsotopeBundle;
-
 
 class StaticJsonResponseTranslator
 {
     public static function getPreCheckoutResponse(array $json)
     {
-        dump($json); exit;
+        dump($json);
+        exit;
     }
 }

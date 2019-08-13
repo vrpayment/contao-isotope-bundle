@@ -1,16 +1,15 @@
 <?php
-/**
- * contao-isotope-bundle for Contao Open Source CMS
+
+/*
+ * VR Payment GmbH Contao Isotope Bundle
  *
- * Copyright (C) 2019 47GradNord - Agentur für Internetlösungen
+ * @copyright  Copyright (c) 2019-2019, VR Payment GmbH
+ * @author     VR Payment GmbH <info@vr-payment.de>
  *
- * @license    commercial
- * @author     Holger Neuner
+ * @license LGPL-3.0-or-later
  */
 
-
 namespace Vrpayment\ContaoIsotopeBundle\Entity;
-
 
 use Vrpayment\ContaoIsotopeBundle\StaticResponseResultValidator;
 
@@ -50,11 +49,13 @@ class PreAuthorization
 
     /**
      * @param bool $hasError
+     *
      * @return PreAuthorization
      */
-    public function setHasError(bool $hasError): PreAuthorization
+    public function setHasError(bool $hasError): self
     {
         $this->hasError = $hasError;
+
         return $this;
     }
 
@@ -68,11 +69,13 @@ class PreAuthorization
 
     /**
      * @param string $resultCode
+     *
      * @return PreAuthorization
      */
-    public function setResultCode(string $resultCode): PreAuthorization
+    public function setResultCode(string $resultCode): self
     {
         $this->resultCode = $resultCode;
+
         return $this;
     }
 
@@ -86,11 +89,13 @@ class PreAuthorization
 
     /**
      * @param string $resultDescription
+     *
      * @return PreAuthorization
      */
-    public function setResultDescription(string $resultDescription): PreAuthorization
+    public function setResultDescription(string $resultDescription): self
     {
         $this->resultDescription = $resultDescription;
+
         return $this;
     }
 
@@ -104,11 +109,13 @@ class PreAuthorization
 
     /**
      * @param string|null $resultDetailExtendedDescription
+     *
      * @return PreAuthorization
      */
-    public function setResultDetailExtendedDescription(?string $resultDetailExtendedDescription): PreAuthorization
+    public function setResultDetailExtendedDescription(?string $resultDetailExtendedDescription): self
     {
         $this->resultDetailExtendedDescription = $resultDetailExtendedDescription;
+
         return $this;
     }
 
@@ -122,11 +129,13 @@ class PreAuthorization
 
     /**
      * @param string|null $resultDetailConnectorTxID1
+     *
      * @return PreAuthorization
      */
-    public function setResultDetailConnectorTxID1(?string $resultDetailConnectorTxID1): PreAuthorization
+    public function setResultDetailConnectorTxID1(?string $resultDetailConnectorTxID1): self
     {
         $this->resultDetailConnectorTxID1 = $resultDetailConnectorTxID1;
+
         return $this;
     }
 
@@ -140,11 +149,13 @@ class PreAuthorization
 
     /**
      * @param string|null $redirectUrl
+     *
      * @return PreAuthorization
      */
-    public function setRedirectUrl(?string $redirectUrl): PreAuthorization
+    public function setRedirectUrl(?string $redirectUrl): self
     {
         $this->redirectUrl = $redirectUrl;
+
         return $this;
     }
 
@@ -158,11 +169,13 @@ class PreAuthorization
 
     /**
      * @param string|null $redirectMethode
+     *
      * @return PreAuthorization
      */
-    public function setRedirectMethode(?string $redirectMethode): PreAuthorization
+    public function setRedirectMethode(?string $redirectMethode): self
     {
         $this->redirectMethode = $redirectMethode;
+
         return $this;
     }
 
@@ -176,23 +189,25 @@ class PreAuthorization
 
     /**
      * @param mixed $redirectParameters
+     *
      * @return PreAuthorization
      */
     public function setRedirectParameters($redirectParameters)
     {
         $this->redirectParameters = $redirectParameters;
+
         return $this;
     }
 
-
     /**
      * @param array $result
+     *
      * @return PreAuthorization
      */
     public static function buildFromResultArray(array $result)
     {
         $pa = new self();
-        $pa->setHasError((StaticResponseResultValidator::isSuccessfullyPendingTransaction($result))? false: true);
+        $pa->setHasError((StaticResponseResultValidator::isSuccessfullyPendingTransaction($result)) ? false : true);
         $pa->setRedirectMethode($result['redirect']['method']);
         $pa->setRedirectParameters($result['redirect']['parameters']);
         $pa->setRedirectUrl($result['redirect']['url']);
@@ -202,6 +217,5 @@ class PreAuthorization
         $pa->setResultDetailConnectorTxID1($result['resultDetails']['ConnectorTxID1']);
 
         return $pa;
-
     }
 }

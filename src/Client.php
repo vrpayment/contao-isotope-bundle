@@ -11,7 +11,6 @@
 
 namespace Vrpayment\ContaoIsotopeBundle;
 
-use Isotope\Interfaces\IsotopeOrderableCollection;
 use Psr\Log\LoggerInterface;
 use Vrpayment\ContaoIsotopeBundle\Http\CurlClient;
 use Vrpayment\ContaoIsotopeBundle\Http\Exception\ClientException;
@@ -49,6 +48,7 @@ class Client
      *
      * @param $token
      * @param mixed $testMode
+     * @param mixed $routingOptions
      */
     public function __construct($token, $routingOptions)
     {
@@ -74,11 +74,13 @@ class Client
 
     /**
      * @param string $routePayments
+     *
      * @return Client
      */
-    public function setRoutePayments(string $routePayments): Client
+    public function setRoutePayments(string $routePayments): self
     {
         $this->routePayments = $routePayments;
+
         return $this;
     }
 
@@ -92,11 +94,13 @@ class Client
 
     /**
      * @param string $routeRegistrations
+     *
      * @return Client
      */
-    public function setRouteRegistrations(string $routeRegistrations): Client
+    public function setRouteRegistrations(string $routeRegistrations): self
     {
         $this->routeRegistrations = $routeRegistrations;
+
         return $this;
     }
 
@@ -110,11 +114,13 @@ class Client
 
     /**
      * @param string $routePreCheckout
+     *
      * @return Client
      */
-    public function setRoutePreCheckout(string $routePreCheckout): Client
+    public function setRoutePreCheckout(string $routePreCheckout): self
     {
         $this->routePreCheckout = $routePreCheckout;
+
         return $this;
     }
 
@@ -142,10 +148,10 @@ class Client
         }
     }
 
-
     /**
      * @param $ressourcePath
      * @param $entityId
+     *
      * @return Response|ResponseInterface
      */
     public function getPaymentStatus($ressourcePath, $entityId)
@@ -188,11 +194,13 @@ class Client
 
     /**
      * @param string $defaultUrl
+     *
      * @return Client
      */
-    public function setDefaultUrl(string $defaultUrl): Client
+    public function setDefaultUrl(string $defaultUrl): self
     {
         $this->defaultUrl = $defaultUrl;
+
         return $this;
     }
 

@@ -11,9 +11,7 @@
 
 namespace Vrpayment\ContaoIsotopeBundle\Brand;
 
-use Contao\Environment;
 use Contao\FrontendTemplate;
-use Isotope\Interfaces\IsotopeOrderableCollection;
 use Vrpayment\ContaoIsotopeBundle\Entity\PreCheckout;
 use Vrpayment\ContaoIsotopeBundle\Http\ResponseInterface;
 use Vrpayment\ContaoIsotopeBundle\Order;
@@ -22,6 +20,7 @@ class Visa extends AbstractBrand implements BrandInterface
 {
     /**
      * @param Order $order
+     *
      * @return string
      */
     public function getPaymentData(Order $order)

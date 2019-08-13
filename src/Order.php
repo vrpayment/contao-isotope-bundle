@@ -1,16 +1,15 @@
 <?php
-/**
- * contao-isotope-bundle for Contao Open Source CMS
+
+/*
+ * VR Payment GmbH Contao Isotope Bundle
  *
- * Copyright (C) 2019 47GradNord - Agentur für Internetlösungen
+ * @copyright  Copyright (c) 2019-2019, VR Payment GmbH
+ * @author     VR Payment GmbH <info@vr-payment.de>
  *
- * @license    commercial
- * @author     Holger Neuner
+ * @license LGPL-3.0-or-later
  */
 
-
 namespace Vrpayment\ContaoIsotopeBundle;
-
 
 use Contao\PageModel;
 use Isotope\Interfaces\IsotopeOrderableCollection;
@@ -24,6 +23,7 @@ class Order
 
     /**
      * Order constructor.
+     *
      * @param IsotopeOrderableCollection $orderableCollection
      */
     public function __construct(IsotopeOrderableCollection $orderableCollection)
@@ -69,8 +69,7 @@ class Order
      */
     public function getPaymentShopperResultUrl($id = false)
     {
-        if(!$id)
-        {
+        if (!$id) {
             return \Environment::get('url').'/'.PageModel::findByPk($this->orderableCollection->getPaymentMethod()->vrpayment_shopperResultUrl)->getFrontendUrl();
         }
 
@@ -162,8 +161,7 @@ class Order
             ++$count;
         }
 
-        if(!$addShipping)
-        {
+        if (!$addShipping) {
             return $cartItems;
         }
 
@@ -181,8 +179,7 @@ class Order
      */
     public function getTestmode()
     {
-        if('1' === $this->orderableCollection->getPaymentMethod()->debug)
-        {
+        if ('1' === $this->orderableCollection->getPaymentMethod()->debug) {
             return true;
         }
 

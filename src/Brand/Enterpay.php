@@ -11,13 +11,8 @@
 
 namespace Vrpayment\ContaoIsotopeBundle\Brand;
 
-use Contao\Controller;
-use Isotope\Interfaces\IsotopeOrderableCollection;
-use Vrpayment\ContaoIsotopeBundle\Entity\PreAuthorization;
 use Vrpayment\ContaoIsotopeBundle\Entity\PreCheckout;
-use Vrpayment\ContaoIsotopeBundle\Http\ResponseInterface;
 use Vrpayment\ContaoIsotopeBundle\Order;
-use Vrpayment\ContaoIsotopeBundle\StaticHelper;
 
 class Enterpay extends AbstractBrand
 {

@@ -11,8 +11,6 @@
 
 namespace Vrpayment\ContaoIsotopeBundle\Brand;
 
-
 abstract class AbstractBrand implements BrandInterface
 {
-
 }

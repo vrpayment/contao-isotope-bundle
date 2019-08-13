@@ -1,16 +1,15 @@
 <?php
-/**
- * contao-isotope-bundle for Contao Open Source CMS
+
+/*
+ * VR Payment GmbH Contao Isotope Bundle
  *
- * Copyright (C) 2019 47GradNord - Agentur für Internetlösungen
+ * @copyright  Copyright (c) 2019-2019, VR Payment GmbH
+ * @author     VR Payment GmbH <info@vr-payment.de>
  *
- * @license    commercial
- * @author     Holger Neuner
+ * @license LGPL-3.0-or-later
  */
 
-
 namespace Vrpayment\ContaoIsotopeBundle;
-
 
 class StaticResponseResultValidator
 {
@@ -19,8 +18,7 @@ class StaticResponseResultValidator
      */
     public static function isSuccessfullyPendingTransaction(array $json)
     {
-        if(preg_match('/^(000\.200)/', $json['result']['code']))
-        {
+        if (preg_match('/^(000\.200)/', $json['result']['code'])) {
             return true;
         }
 
@@ -29,16 +27,15 @@ class StaticResponseResultValidator
 
     /**
      * @param array $json
+     *
      * @return bool
      */
     public static function isSuccessfullyProceedTransaction(array $json)
     {
-        if(preg_match('/^(000\.000\.|000\.100\.1|000\.[36])/', $json['result']['code']))
-        {
+        if (preg_match('/^(000\.000\.|000\.100\.1|000\.[36])/', $json['result']['code'])) {
             return true;
         }
 
         return false;
     }
-
 }
