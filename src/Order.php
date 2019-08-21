@@ -14,6 +14,8 @@ namespace Vrpayment\ContaoIsotopeBundle;
 use Contao\PageModel;
 use Isotope\Interfaces\IsotopeOrderableCollection;
 use Isotope\Model\ProductCollectionItem;
+use Isotope\Model\ProductCollectionSurcharge\Shipping;
+use Isotope\Model\TaxClass;
 use Isotope\Model\TaxRate;
 
 class Order
@@ -70,7 +72,7 @@ class Order
     public function getPaymentShopperResultUrl($id = false)
     {
         if (!$id) {
-            return \Environment::get('url').'/'.PageModel::findByPk($this->orderableCollection->getPaymentMethod()->vrpayment_shopperResultUrl)->getFrontendUrl();
+            return \Environment::get('url').'/'.PageModel::findByPk($this->orderableCollection->getPaymentMethod()->vrpayment_shopperResultUrl)->alias.'/process.html';
         }
 
         return $this->orderableCollection->getPaymentMethod()->vrpayment_shopperResultUrl;
@@ -154,7 +156,7 @@ class Order
                 '&cart.items['.$count.'].merchantItemId='.$item->getSku().
                 '&cart.items['.$count.'].price='.number_format($item->getPrice(), 2).
                 '&cart.items['.$count.'].quantity='.$item->quantity.
-                '&cart.items['.$count.'].totalAmount='.number_format($item->getTotalPrice(), 2).
+                '&cart.items['.$count.'].totalAmount='.$this->getTotalAmount($item).
                 '&cart.items['.$count.'].tax='.$this->getOrderTaxRatePerCartItemFormatted($item).
                 '&cart.items['.$count.'].totalTaxAmount='.$this->getOrderTotalTaxAmount($item);
 
@@ -168,8 +170,8 @@ class Order
         $cartItems .= '&cart.items['.$count.'].name='.$this->orderableCollection->getShippingSurcharge()->label.
             '&cart.items['.$count.'].merchantItemId=S'.$this->orderableCollection->getShippingSurcharge()->source_id.
             '&cart.items['.$count.'].price='.number_format($this->orderableCollection->getShippingSurcharge()->total_price, 2).
-            '&cart.items['.$count.'].quantity=1&cart.items['.$count.'].totalAmount='.number_format($this->orderableCollection->getShippingSurcharge()->total_price, 2).
-            '&cart.items['.$count.'].tax=0&cart.items['.$count.'].totalTaxAmount=0';
+            '&cart.items['.$count.'].quantity=1&cart.items['.$count.'].totalAmount='.$this->getTotalAmmountShippingSourcharge($this->orderableCollection->getShippingSurcharge()).
+            '&cart.items['.$count.'].tax='.$this->getTaxShippingSourcharge().'&cart.items['.$count.'].totalTaxAmount=0';
 
         return $cartItems;
     }
@@ -186,12 +188,43 @@ class Order
         false;
     }
 
+    private function getTaxShippingSourcharge()
+    {
+        // Price net
+        if('net' === $this->orderableCollection->getConfig()->priceDisplay)
+        {
+            return 0.19;
+        }
+
+        // Price gross
+        if('gross' === $this->orderableCollection->getConfig()->priceDisplay)
+        {
+            return 0.0;
+        }
+
+    }
+
+    private function getTotalAmmountShippingSourcharge(Shipping $shipping)
+    {
+        // Price net
+        if('net' === $this->orderableCollection->getConfig()->priceDisplay)
+        {
+            return number_format(($shipping->total_price*1.19), 2);
+        }
+
+        // Price gross
+        if('gross' === $this->orderableCollection->getConfig()->priceDisplay)
+        {
+            return number_format($shipping->total_price, 2);
+        }
+    }
+
     /**
      * @param ProductCollectionItem $item
      *
      * @return float
      */
-    private function getOrderTaxRatePerCartItemFormatted(ProductCollectionItem $item)
+    private function getOrderTaxRatePerCartItemFormatted(ProductCollectionItem $item, $notFormatted = false)
     {
         if (!$item->hasProduct()) {
             return 0.0;
@@ -203,6 +236,11 @@ class Order
 
         /** @var TaxRate $taxRate */
         $taxRate = $objTaxClass->getRelated('includes');
+
+        if($notFormatted)
+        {
+            return $taxRate->getAmount();
+        }
 
         $rate = explode('.', $taxRate->getAmount());
 
@@ -217,5 +255,28 @@ class Order
     private function getOrderTotalTaxAmount(ProductCollectionItem $item)
     {
         return number_format($item->getTotalPrice() - $item->getTaxFreeTotalPrice(), 2);
+    }
+
+    /**
+     * @param ProductCollectionItem $item
+     * @return string
+     */
+    private function getTotalAmount(ProductCollectionItem $item)
+    {
+        // Price net
+        if('net' === $this->orderableCollection->getConfig()->priceDisplay)
+        {
+            $num = $item->getTotalPrice();
+            $percentage = $this->getOrderTaxRatePerCartItemFormatted($item, true);
+            $num += $num*($percentage/100);
+
+            return number_format($num,'2');
+        }
+
+        // Price gross
+        if('gross' === $this->orderableCollection->getConfig()->priceDisplay)
+        {
+            return number_format($item->getTotalPrice(),'2');
+        }
     }
 }
