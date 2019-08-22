@@ -73,7 +73,7 @@ class VrPayment extends Payment implements IsotopePayment
                 Controller::redirect($strUrl, 301);
             }
 
-            $objTemplate->error = 'Fehlercode: '.$paymentStatus->getResultCode().', Description:'.$paymentStatus->getResultDescription();
+            $objTemplate->error = 'Wir konnten Ihre Zahlung nicht abwickeln. Fehlercode: '.$paymentStatus->getResultCode().', Description:'.$paymentStatus->getResultDescription();
 
             return $objTemplate->parse();
         }

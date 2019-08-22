@@ -92,7 +92,7 @@ class PaymentStatus
     public static function buildFromResultArray(array $result)
     {
         $ps = new self();
-        $ps->setHasError((StaticResponseResultValidator::isSuccessfullyProceedTransaction($result)));
+        $ps->setHasError((StaticResponseResultValidator::isSuccessfullyProceedTransaction($result)) ? false : true);
         $ps->setResultCode($result['result']['code']);
         $ps->setResultDescription($result['result']['description']);
 
