@@ -64,6 +64,8 @@ class VrPayment extends Payment implements IsotopePayment
 
             $paymentStatus = $vrPaymentManager->getPaymentStatus($this->ressourcePath);
 
+            dump($paymentStatus); exit;
+
             if (!$paymentStatus->isHasError()) {
                 $objOrder->checkout();
                 $objOrder->updateOrderStatus($this->new_order_status);

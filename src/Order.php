@@ -154,7 +154,7 @@ class Order
         foreach ($this->orderableCollection->getItems() as $key => $item) {
             $cartItems .= '&cart.items['.$count.'].name='.$item->getName().
                 '&cart.items['.$count.'].merchantItemId='.$item->getSku().
-                '&cart.items['.$count.'].price='.number_format($item->getPrice(), 2).
+                '&cart.items['.$count.'].price='.$this->getPrice($item).
                 '&cart.items['.$count.'].quantity='.$item->quantity.
                 '&cart.items['.$count.'].totalAmount='.$this->getTotalAmount($item).
                 '&cart.items['.$count.'].tax='.$this->getOrderTaxRatePerCartItemFormatted($item).
@@ -169,9 +169,9 @@ class Order
 
         $cartItems .= '&cart.items['.$count.'].name='.$this->orderableCollection->getShippingSurcharge()->label.
             '&cart.items['.$count.'].merchantItemId=S'.$this->orderableCollection->getShippingSurcharge()->source_id.
-            '&cart.items['.$count.'].price='.number_format($this->orderableCollection->getShippingSurcharge()->total_price, 2).
-            '&cart.items['.$count.'].quantity=1&cart.items['.$count.'].totalAmount='.$this->getTotalAmmountShippingSourcharge($this->orderableCollection->getShippingSurcharge()).
-            '&cart.items['.$count.'].tax='.$this->getTaxShippingSourcharge().'&cart.items['.$count.'].totalTaxAmount=0';
+            '&cart.items['.$count.'].price='.$this->getTotalAmmountShippingSurcharge($this->orderableCollection->getShippingSurcharge()).
+            '&cart.items['.$count.'].quantity=1&cart.items['.$count.'].totalAmount='.$this->getTotalAmmountShippingSurcharge($this->orderableCollection->getShippingSurcharge()).
+            '&cart.items['.$count.'].tax='.$this->getTaxShippingSurcharge().'&cart.items['.$count.'].totalTaxAmount='.$this->getTotalTaxAmountShippingSurcharge($this->orderableCollection->getShippingSurcharge());
 
         return $cartItems;
     }
@@ -188,7 +188,7 @@ class Order
         false;
     }
 
-    private function getTaxShippingSourcharge()
+    private function getTaxShippingSurcharge()
     {
         // Price net
         if('net' === $this->orderableCollection->getConfig()->priceDisplay)
@@ -204,7 +204,7 @@ class Order
 
     }
 
-    private function getTotalAmmountShippingSourcharge(Shipping $shipping)
+    private function getTotalAmmountShippingSurcharge(Shipping $shipping)
     {
         // Price net
         if('net' === $this->orderableCollection->getConfig()->priceDisplay)
@@ -217,6 +217,14 @@ class Order
         {
             return number_format($shipping->total_price, 2);
         }
+    }
+
+    private function getTotalTaxAmountShippingSurcharge(Shipping $shipping)
+    {
+        $bPrice = $this->getTotalAmmountShippingSurcharge($shipping);
+        $nPrice = number_format($bPrice/1.19, 2);
+
+        return $bPrice-$nPrice;
     }
 
     /**
@@ -254,7 +262,32 @@ class Order
      */
     private function getOrderTotalTaxAmount(ProductCollectionItem $item)
     {
-        return number_format($item->getTotalPrice() - $item->getTaxFreeTotalPrice(), 2);
+        $calcMwSt = explode('.', $this->getOrderTaxRatePerCartItemFormatted($item));
+        $calcMwSt = '1.'.$calcMwSt[1];
+
+        $bPrice = $this->getPrice($item);
+        $nPrice = number_format($this->getPrice($item)/(float)$calcMwSt, 2);
+
+        return $bPrice-$nPrice;
+    }
+
+    private function getPrice(ProductCollectionItem $item)
+    {
+        // Price net
+        if('net' === $this->orderableCollection->getConfig()->priceDisplay)
+        {
+            $num = $item->getTotalPrice();
+            $percentage = $this->getOrderTaxRatePerCartItemFormatted($item, true);
+            $num += $num*($percentage/100);
+
+            return number_format($num,'2');
+        }
+
+        // Price gross (Brutto)
+        if('gross' === $this->orderableCollection->getConfig()->priceDisplay)
+        {
+            return number_format($item->getTotalPrice(),'2');
+        }
     }
 
     /**
