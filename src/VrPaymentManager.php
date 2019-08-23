@@ -13,6 +13,7 @@ namespace Vrpayment\ContaoIsotopeBundle;
 
 use Doctrine\DBAL\Connection;
 use Isotope\Interfaces\IsotopeOrderableCollection;
+use Monolog\Logger;
 use Psr\Log\LoggerInterface;
 use Vrpayment\ContaoIsotopeBundle\Brand\BrandFactory;
 use Vrpayment\ContaoIsotopeBundle\Brand\BrandInterface;
@@ -163,7 +164,7 @@ class VrPaymentManager
             return $preCheckout;
         }
 
-        // TODO Log
+        $this->log('Precheckout failed processing Order ID'.$this->getOrder()->getOrderId().'.');
 
         /** @var PreCheckout $e */
         $preCheckout = new PreCheckout();
@@ -185,7 +186,14 @@ class VrPaymentManager
             return false;
         }
 
-        return PreAuthorization::buildFromResultArray($this->getClient()->send($this->getOrder()->getPaymentType(), $this->getBrand()->getPaymentData($this->getOrder()))->json());
+        /** @var PreAuthorization $preAuthorization */
+        $preAuthorization = PreAuthorization::buildFromResultArray($this->getClient()->send($this->getOrder()->getPaymentType(), $this->getBrand()->getPaymentData($this->getOrder()))->json());
+
+        if ($preAuthorization->isHasError()) {
+            $this->log('Pre-Authorization failed, processed Order-Id '.$this->getOrder()->getOrderId().', Error: '.$preAuthorization->getResultCode().','.$preAuthorization->getResultDescription());
+        }
+
+        return $preAuthorization;
     }
 
     /**
@@ -195,6 +203,25 @@ class VrPaymentManager
      */
     public function getPaymentStatus($ressourcePath)
     {
-        return PaymentStatus::buildFromResultArray($this->getClient()->getPaymentStatus($ressourcePath, $this->getOrder()->getPaymentEntityId())->json());
+        /** @var PaymentStatus $paymentStatus */
+        $paymentStatus = PaymentStatus::buildFromResultArray($this->getClient()->getPaymentStatus($ressourcePath, $this->getOrder()->getPaymentEntityId())->json());
+
+        if ($paymentStatus->isHasError()) {
+            $this->log('Get Payment-Status failed, processing Order-ID '.$this->getOrder()->getOrderId().', Error: '.$paymentStatus->getResultCode().','.$paymentStatus->getResultDescription());
+        }
+
+        return $paymentStatus;
+    }
+
+    /**
+     * @param $message
+     * @param int   $level
+     * @param array $context
+     */
+    private function log($message, $level = Logger::ERROR, array $context = [])
+    {
+        if (null !== ($logger = $this->getLogger())) {
+            $logger->log($level, $message, $context);
+        }
     }
 }

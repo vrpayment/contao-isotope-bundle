@@ -20,7 +20,6 @@ use Isotope\Interfaces\IsotopePurchasableCollection;
 use Isotope\Model\Payment;
 use Isotope\Module\Checkout;
 use Isotope\Template;
-use Vrpayment\ContaoIsotopeBundle\Entity\PaymentStatus;
 use Vrpayment\ContaoIsotopeBundle\Entity\PreAuthorization;
 use Vrpayment\ContaoIsotopeBundle\VrPaymentManager;
 
@@ -61,7 +60,6 @@ class VrPayment extends Payment implements IsotopePayment
 
         // Handle Request come back with Ressource Path
         if (null !== $this->ressourcePath) {
-
             $paymentStatus = $vrPaymentManager->getPaymentStatus($this->ressourcePath);
 
             if (!$paymentStatus->isHasError()) {

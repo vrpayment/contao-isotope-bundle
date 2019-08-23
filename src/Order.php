@@ -15,7 +15,6 @@ use Contao\PageModel;
 use Isotope\Interfaces\IsotopeOrderableCollection;
 use Isotope\Model\ProductCollectionItem;
 use Isotope\Model\ProductCollectionSurcharge\Shipping;
-use Isotope\Model\TaxClass;
 use Isotope\Model\TaxRate;
 
 class Order
@@ -39,6 +38,14 @@ class Order
     public function getPaymentAuthorizationToken()
     {
         return $this->orderableCollection->getPaymentMethod()->vrpayment_token;
+    }
+
+    /**
+     * @return int
+     */
+    public function getOrderId()
+    {
+        return $this->orderableCollection->getId();
     }
 
     /**
@@ -191,30 +198,25 @@ class Order
     private function getTaxShippingSurcharge()
     {
         // Price net
-        if('net' === $this->orderableCollection->getConfig()->priceDisplay)
-        {
+        if ('net' === $this->orderableCollection->getConfig()->priceDisplay) {
             return 0.19;
         }
 
         // Price gross
-        if('gross' === $this->orderableCollection->getConfig()->priceDisplay)
-        {
+        if ('gross' === $this->orderableCollection->getConfig()->priceDisplay) {
             return 0.0;
         }
-
     }
 
     private function getTotalAmmountShippingSurcharge(Shipping $shipping)
     {
         // Price net
-        if('net' === $this->orderableCollection->getConfig()->priceDisplay)
-        {
-            return number_format(($shipping->total_price*1.19), 2);
+        if ('net' === $this->orderableCollection->getConfig()->priceDisplay) {
+            return number_format(($shipping->total_price * 1.19), 2);
         }
 
         // Price gross
-        if('gross' === $this->orderableCollection->getConfig()->priceDisplay)
-        {
+        if ('gross' === $this->orderableCollection->getConfig()->priceDisplay) {
             return number_format($shipping->total_price, 2);
         }
     }
@@ -222,13 +224,14 @@ class Order
     private function getTotalTaxAmountShippingSurcharge(Shipping $shipping)
     {
         $bPrice = $this->getTotalAmmountShippingSurcharge($shipping);
-        $nPrice = number_format($bPrice/1.19, 2);
+        $nPrice = number_format($bPrice / 1.19, 2);
 
-        return $bPrice-$nPrice;
+        return $bPrice - $nPrice;
     }
 
     /**
      * @param ProductCollectionItem $item
+     * @param mixed                 $notFormatted
      *
      * @return float
      */
@@ -245,8 +248,7 @@ class Order
         /** @var TaxRate $taxRate */
         $taxRate = $objTaxClass->getRelated('includes');
 
-        if($notFormatted)
-        {
+        if ($notFormatted) {
             return $taxRate->getAmount();
         }
 
@@ -266,50 +268,47 @@ class Order
         $calcMwSt = '1.'.$calcMwSt[1];
 
         $bPrice = $this->getPrice($item);
-        $nPrice = number_format($this->getPrice($item)/(float)$calcMwSt, 2);
+        $nPrice = number_format($this->getPrice($item) / (float) $calcMwSt, 2);
 
-        return $bPrice-$nPrice;
+        return number_format($bPrice - $nPrice, 2);
     }
 
     private function getPrice(ProductCollectionItem $item)
     {
         // Price net
-        if('net' === $this->orderableCollection->getConfig()->priceDisplay)
-        {
+        if ('net' === $this->orderableCollection->getConfig()->priceDisplay) {
             $num = $item->getTotalPrice();
             $percentage = $this->getOrderTaxRatePerCartItemFormatted($item, true);
-            $num += $num*($percentage/100);
+            $num += $num * ($percentage / 100);
 
-            return number_format($num,'2');
+            return number_format($num, '2');
         }
 
         // Price gross (Brutto)
-        if('gross' === $this->orderableCollection->getConfig()->priceDisplay)
-        {
-            return number_format($item->getTotalPrice(),'2');
+        if ('gross' === $this->orderableCollection->getConfig()->priceDisplay) {
+            return number_format($item->getTotalPrice(), '2');
         }
     }
 
     /**
      * @param ProductCollectionItem $item
+     *
      * @return string
      */
     private function getTotalAmount(ProductCollectionItem $item)
     {
         // Price net
-        if('net' === $this->orderableCollection->getConfig()->priceDisplay)
-        {
+        if ('net' === $this->orderableCollection->getConfig()->priceDisplay) {
             $num = $item->getTotalPrice();
             $percentage = $this->getOrderTaxRatePerCartItemFormatted($item, true);
-            $num += $num*($percentage/100);
+            $num += $num * ($percentage / 100);
 
-            return number_format($num,'2');
+            return number_format($num, '2');
         }
 
         // Price gross
-        if('gross' === $this->orderableCollection->getConfig()->priceDisplay)
-        {
-            return number_format($item->getTotalPrice(),'2');
+        if ('gross' === $this->orderableCollection->getConfig()->priceDisplay) {
+            return number_format($item->getTotalPrice(), '2');
         }
     }
 }
