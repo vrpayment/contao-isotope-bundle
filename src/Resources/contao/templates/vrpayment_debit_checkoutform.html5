@@ -1,3 +1,8 @@
+<script>
+    var wpwlOptions = {
+        locale: "de"
+    }
+</script>
 <script src="<?= $this->uriWidgetJs; ?>"></script>
 <form action="<?= $this->shopperResultUrl; ?>" class="paymentWidgets" data-brands="<?= $this->brand; ?>"></form>
 
