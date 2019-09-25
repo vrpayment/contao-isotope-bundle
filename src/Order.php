@@ -277,9 +277,10 @@ class Order
     {
         // Price net
         if ('net' === $this->orderableCollection->getConfig()->priceDisplay) {
-            $num = $item->getTotalPrice();
+            $num = number_format($item->getTotalPrice(), 2);
             $percentage = $this->getOrderTaxRatePerCartItemFormatted($item, true);
-            $num += $num * ($percentage / 100);
+
+            $num += number_format($num * ($percentage / 100), 4);
 
             return number_format($num, '2');
         }

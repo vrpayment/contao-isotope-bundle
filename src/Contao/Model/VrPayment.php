@@ -89,7 +89,7 @@ class VrPayment extends Payment implements IsotopePayment
             $preAuthorization = $vrPaymentManager->getPreAuthorization();
 
             if ($preAuthorization->isHasError()) {
-                $objTemplate->error = 'Fehlercode: '.$preAuthorization->getResultCode().', Description:'.$preAuthorization->getResultDescription();
+                $objTemplate->error = 'Fehlercode: '.$preAuthorization->getResultCode().', Description:'.$preAuthorization->getResultDescription().' Description Extended:'.$preAuthorization->getResultDetailExtendedDescription();
 
                 return $objTemplate->parse();
             }

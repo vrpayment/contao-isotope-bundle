@@ -190,7 +190,7 @@ class VrPaymentManager
         $preAuthorization = PreAuthorization::buildFromResultArray($this->getClient()->send($this->getOrder()->getPaymentType(), $this->getBrand()->getPaymentData($this->getOrder()))->json());
 
         if ($preAuthorization->isHasError()) {
-            $this->log('Pre-Authorization failed, processed Order-Id '.$this->getOrder()->getOrderId().', Error: '.$preAuthorization->getResultCode().','.$preAuthorization->getResultDescription());
+            $this->log('Pre-Authorization failed, processed Order-Id '.$this->getOrder()->getOrderId().', Error: '.$preAuthorization->getResultCode().', Description(s):'.$preAuthorization->getResultDescription() .','.$preAuthorization->getResultDetailExtendedDescription());
         }
 
         return $preAuthorization;

@@ -20,6 +20,7 @@ class Enterpay extends AbstractBrand
     {
         $data = 'entityId='.$order->getPaymentEntityId().
             '&customParameters[merchantId]='.$order->getPaymentMerchantId().
+            '&customParameters[buyerCompanyVat]='.$order->getOrderBillingAddress()->vat_no.
             '&amount='.$order->getOrderAmount().
             '&currency='.$order->getOrderCurrency().
             '&paymentBrand='.$order->getPaymentBrand().
