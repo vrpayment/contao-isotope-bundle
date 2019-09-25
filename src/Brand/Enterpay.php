@@ -21,6 +21,7 @@ class Enterpay extends AbstractBrand
         $data = 'entityId='.$order->getPaymentEntityId().
             '&customParameters[merchantId]='.$order->getPaymentMerchantId().
             '&customParameters[buyerCompanyVat]='.$order->getOrderBillingAddress()->vat_no.
+            '&merchantTransactionId='.$order->getOrderId().
             '&amount='.$order->getOrderAmount().
             '&currency='.$order->getOrderCurrency().
             '&paymentBrand='.$order->getPaymentBrand().
@@ -56,5 +57,10 @@ class Enterpay extends AbstractBrand
     public function proceedPreAuthorization()
     {
         return true;
+    }
+
+    public function forceSendPrepareCheckout()
+    {
+        return false;
     }
 }

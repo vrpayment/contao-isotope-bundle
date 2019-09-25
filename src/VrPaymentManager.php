@@ -150,7 +150,7 @@ class VrPaymentManager
         }
 
         /** @var Response $response */
-        $response = $this->getClient()->send($this->getOrder()->getPaymentType(), $this->getBrand()->getPaymentData($this->getOrder()));
+        $response = $this->getClient()->send($this->getOrder()->getPaymentType(), $this->getBrand()->getPaymentData($this->getOrder()),$this->getBrand()->forceSendPrepareCheckout());
 
         if (StaticResponseResultValidator::isSuccessfullyPendingTransaction($response->json())) {
             // TODO Log

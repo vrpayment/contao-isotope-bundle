@@ -21,6 +21,7 @@ class DirectDebitSepa extends AbstractBrand implements BrandInterface
     {
         $data = 'entityId='.$order->getPaymentEntityId().
             '&amount='.$order->getOrderAmount().
+            '&merchantTransactionId='.$order->getOrderId().
             '&currency='.$order->getOrderCurrency().
             '&paymentType='.$order->getPaymentType();
 
@@ -61,5 +62,10 @@ class DirectDebitSepa extends AbstractBrand implements BrandInterface
     public function proceedPreAuthorization()
     {
         return false;
+    }
+
+    public function forceSendPrepareCheckout()
+    {
+        return true;
     }
 }

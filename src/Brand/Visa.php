@@ -61,4 +61,9 @@ class Visa extends AbstractBrand implements BrandInterface
     {
         return false;
     }
+
+    public function forceSendPrepareCheckout()
+    {
+        return false;
+    }
 }

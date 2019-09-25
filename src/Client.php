@@ -132,8 +132,12 @@ class Client
      *
      * @return Response|ResponseInterface
      */
-    public function send($paymentType, $body)
+    public function send($paymentType, $body, $forceSendPrepareCheckout = false)
     {
+        if($forceSendPrepareCheckout)
+        {
+            return $this->sendDebitPrepareCheckout($body);
+        }
         switch ($paymentType) {
             case 'PA':
                 return $this->sendPreAuthorization($body);

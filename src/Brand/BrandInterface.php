@@ -35,4 +35,10 @@ interface BrandInterface
      * @return bool
      */
     public function proceedPreAuthorization();
+
+    /**
+     * @return bool
+     */
+    public function forceSendPrepareCheckout();
+
 }
