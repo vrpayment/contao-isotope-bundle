@@ -12,9 +12,7 @@
     "require": {
         "php": "^7.1",
         "contao/core-bundle": "^4.7",
-        "symfony/framework-bundle": "^3.3",
         "guzzlehttp/guzzle": "^6.3",
-        "symfony/monolog-bundle": "^3.4",
         "isotope/isotope-core": "^2.5",
         "ext-curl": "*",
         "ramsey/uuid": "^3.8"
